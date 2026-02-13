@@ -2,10 +2,7 @@ const mongoose = require('mongoose')
 
 const mongodbURI = process.env.MONGO_URI;
 
-mongoose.connect(mongodbURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongodbURI);
 const connection = mongoose.connection;
 
 connection.on("error", console.error.bind(console, "connection error:"));
