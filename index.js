@@ -3,6 +3,7 @@ require("./utils/database");
 
 const express = require("express");
 const userRoute = require("./modules/users/userRoute");
+const recyclingCenterRoutes = require("./modules/recycling/recling.Routes");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use("/api/users", userRoute);
+app.use("/api/recycling", recyclingCenterRoutes);
 
 app.use(errorHandler);
 
