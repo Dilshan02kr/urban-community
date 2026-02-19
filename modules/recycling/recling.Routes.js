@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const validate = require("../../middlewares/validate");
 
 const {
   getAllCenters,
@@ -7,14 +8,16 @@ const {
   createCenter,
   updateCenter,
   deleteCenter,
-} = require("./recycling.Controller");
-
-const {
   createPickupRequest,
   getMyPickupRequests,
   getAllPickupRequests,
   updatePickupStatus,
 } = require("./recycling.Controller");
+
+const {
+  createPickupRequestSchema,
+  updatePickupStatusSchema,
+} = require("./recycling.validation");
 
 // GET all centers (with filters/search)
 router.get("/centers", getAllCenters);
@@ -32,7 +35,11 @@ router.put("/centers/:id", updateCenter);
 router.delete("/centers/:id", deleteCenter);
 
 // Citizen create pickup request
-router.post("/request-pickup", createPickupRequest);
+router.post(
+  "/request-pickup",
+  validate(createPickupRequestSchema),
+  createPickupRequest,
+);
 
 // Citizen view my pickup requests
 router.get("/pickups/my", getMyPickupRequests);
@@ -41,6 +48,10 @@ router.get("/pickups/my", getMyPickupRequests);
 router.get("/pickups", getAllPickupRequests);
 
 // Admin update pickup request status
-router.put("/pickups/:id/status", updatePickupStatus);
+router.put(
+  "/pickups/:id/status",
+  validate(updatePickupStatusSchema),
+  updatePickupStatus,
+);
 
 module.exports = router;

@@ -92,20 +92,14 @@ const deleteCenter = async (req, res) => {
 
 const createPickupRequest = async (req, res) => {
   try {
-    const { wasteType, quantityKg, pickupDate, address, city, notes } =
-      req.body;
-
-    if (!wasteType || !quantityKg || !pickupDate || !address || !city) {
-      return res
-        .status(400)
-        .json({ message: "All required fields must be filled" });
-    }
+    const { wasteType, quantityKg, pickupDate, address, city, notes, userId } =
+      req.validatedBody;
 
     // if you have auth middleware, you can use req.user._id
-    const userId = req.user?._id || req.body.userId;
+    const resolvedUserId = req.user?._id || userId;
 
     const pickupRequest = await PickupRequest.create({
-      userId,
+      userId: resolvedUserId,
       wasteType,
       quantityKg,
       pickupDate,
@@ -153,13 +147,7 @@ const getAllPickupRequests = async (req, res) => {
 
 const updatePickupStatus = async (req, res) => {
   try {
-    const { status } = req.body;
-
-    const validStatuses = ["Pending", "Accepted", "Collected", "Rejected"];
-
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
-    }
+    const { status } = req.validatedBody;
 
     const request = await PickupRequest.findById(req.params.id);
 
