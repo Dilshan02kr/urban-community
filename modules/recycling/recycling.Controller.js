@@ -1,4 +1,5 @@
 const RecyclingCenter = require("./recycling.Model");
+const PickupRequest = require("./pickupRequest.Model");
 
 // GET all centers (with filters & search)
 const getAllCenters = async (req, res) => {
@@ -89,10 +90,103 @@ const deleteCenter = async (req, res) => {
   }
 };
 
+const createPickupRequest = async (req, res) => {
+  try {
+    const { wasteType, quantityKg, pickupDate, address, city, notes } =
+      req.body;
+
+    if (!wasteType || !quantityKg || !pickupDate || !address || !city) {
+      return res
+        .status(400)
+        .json({ message: "All required fields must be filled" });
+    }
+
+    // if you have auth middleware, you can use req.user._id
+    const userId = req.user?._id || req.body.userId;
+
+    const pickupRequest = await PickupRequest.create({
+      userId,
+      wasteType,
+      quantityKg,
+      pickupDate,
+      address,
+      city,
+      notes,
+    });
+
+    return res.status(201).json({
+      message: "Pickup request created successfully",
+      pickupRequest,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Get my pickup requests
+const getMyPickupRequests = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+
+    const requests = await PickupRequest.find({ userId }).sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json(requests);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Get all pickup requests
+const getAllPickupRequests = async (req, res) => {
+  try {
+    const requests = await PickupRequest.find()
+      .populate("userId", "name email")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(requests);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const updatePickupStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const validStatuses = ["Pending", "Accepted", "Collected", "Rejected"];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const request = await PickupRequest.findById(req.params.id);
+
+    if (!request) {
+      return res.status(404).json({ message: "Pickup request not found" });
+    }
+
+    request.status = status;
+    await request.save();
+
+    return res.status(200).json({
+      message: "Pickup status updated successfully",
+      request,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllCenters,
   getCenterById,
   createCenter,
   updateCenter,
   deleteCenter,
+  createPickupRequest,
+  getMyPickupRequests,
+  getAllPickupRequests,
+  updatePickupStatus,
 };
