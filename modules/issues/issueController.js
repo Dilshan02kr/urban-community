@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Issue = require("./issueModel");
 
 exports.createIssue = async (req, res) => {
@@ -53,7 +54,39 @@ exports.getAllIssues = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Server error",
+      message: error.message || "Server error",
+    });
+  }
+};
+
+exports.getIssueById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id).populate("citizen", "name email");
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: issue,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
     });
   }
 };

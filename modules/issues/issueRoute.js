@@ -16,4 +16,6 @@ router.post(
 
 router.get("/", issueController.getAllIssues);
 
+router.get("/:id", issueController.getIssueById);
+
 module.exports = router;
