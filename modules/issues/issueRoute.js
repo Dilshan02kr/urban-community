@@ -18,4 +18,6 @@ router.get("/", issueController.getAllIssues);
 
 router.get("/:id", issueController.getIssueById);
 
+router.get("/user/:userId", issueController.getIssuesByUser);
+
 module.exports = router;

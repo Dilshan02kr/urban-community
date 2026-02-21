@@ -90,3 +90,24 @@ exports.getIssueById = async (req, res) => {
     });
   }
 };
+
+exports.getIssuesByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const issues = await Issue.find({ citizen: userId }).sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json({
+      success: true,
+      total: issues.length,
+      data: issues,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
