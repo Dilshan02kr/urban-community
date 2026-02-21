@@ -72,7 +72,7 @@ issueSchema.pre("save", function (next) {
   if (this.isModified("status") && this.status === "Resolved") {
     this.resolvedAt = new Date();
   }
-  next();
+  // next();
 });
 
 const Issue = mongoose.model("Issue", issueSchema);
