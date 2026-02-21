@@ -14,4 +14,6 @@ router.post(
   issueController.createIssue,
 );
 
+router.get("/", issueController.getAllIssues);
+
 module.exports = router;
