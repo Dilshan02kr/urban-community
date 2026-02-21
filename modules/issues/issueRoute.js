@@ -20,4 +20,6 @@ router.get("/:id", issueController.getIssueById);
 
 router.get("/user/:userId", issueController.getIssuesByUser);
 
+router.delete("/:id", issueController.deleteIssue);
+
 module.exports = router;
