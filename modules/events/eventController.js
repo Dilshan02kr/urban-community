@@ -2,9 +2,7 @@ const Event = require("./eventModel");
 
 const createEvent = async (req, res, next) => {
   try {
-    // Assuming your validation middleware puts data in req.validatedBody
     const eventData = req.validatedBody; 
-
     const newEvent = await Event.create(eventData);
 
     return res.status(201).json({
@@ -17,4 +15,56 @@ const createEvent = async (req, res, next) => {
   }
 };
 
-module.exports = { createEvent };
+const updateEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params; 
+    const updateData = req.validatedBody;
+
+    const updatedEvent = await Event.findByIdAndUpdate(id, updateData, {
+      new: true,           
+      runValidators: true, 
+    });
+
+    if (!updatedEvent) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Event not found" 
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Event updated successfully",
+      data: updatedEvent,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteEvent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedEvent = await Event.findByIdAndDelete(id);
+
+    if (!deletedEvent) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Event not found" 
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Event deleted successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { 
+  createEvent, 
+  updateEvent, 
+  deleteEvent 
+};
