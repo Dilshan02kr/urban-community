@@ -1,4 +1,5 @@
 const Organization = require("./organizationModel");
+const { generateToken } = require("../../utils/tokenManager");
 
 const register = async (req, res, next) => {
   try {
@@ -13,13 +14,18 @@ const register = async (req, res, next) => {
 
     const organization = await Organization.create(value);
 
-    const orgResponse = organization.toObject();
-    delete orgResponse.password;
+    //step 3: generate token
+    const token = generateToken({ id: organization._id });
+
+    organization.token = token;
+    delete organization.password;
 
     return res.status(201).json({
       success: true,
       message: "Organization registered successfully",
-      data: orgResponse,
+      data: {
+        ...organization.toObject(),
+      },
     });
   } catch (err) {
     next(err);

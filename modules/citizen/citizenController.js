@@ -2,24 +2,30 @@ const Citizen = require("./citizenModel");
 
 const register = async (req, res, next) => {
   try {
-    const value = req.validatedBody;
+    const body = req.body;
 
-    const existingUser = await Citizen.findOne({ email: value.email });
+    //step 1: check if the user is already registered
+    const existingUser = await Citizen.findOne({ email: body.email });
     if (existingUser) {
       return res
         .status(409)
         .json({ success: false, message: "Email already registered" });
     }
 
-    const user = await Citizen.create(value);
+    const user = await Citizen.create(body);
 
-    const userResponse = user.toObject();
-    delete userResponse.password;
+    //step 3: generate token
+    const token = generateToken({ id: user._id });
+
+    user.token = token;
+    delete user.password;
 
     return res.status(201).json({
       success: true,
       message: "Citizen registered successfully",
-      data: userResponse,
+      data: {
+        ...user.toObject(),
+      },
     });
   } catch (err) {
     next(err);
