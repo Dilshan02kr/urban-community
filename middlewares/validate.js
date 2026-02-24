@@ -10,8 +10,8 @@ module.exports = (schema) => (req, res, next) => {
         errors: error.details.map((d) => d.message),
       });
     }
-  
-    req.validatedBody = value;
+
+    req.validatedBody = value ?? {};
     next();
   };
   
