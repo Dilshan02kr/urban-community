@@ -1,6 +1,7 @@
 const Organization = require("../organization/organizationModel");
 const Citizen = require("../citizen/citizenModel");
 const bcrypt = require("bcrypt");
+const { generateToken } = require("../../utils/tokenManager");
 
 const login = async (req, res, next) => {
   try {
@@ -38,18 +39,23 @@ const login = async (req, res, next) => {
       user = organization;
     }
 
-    //step 3: generate token
-    const token = generateToken({ id: user._id });
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
+    }
 
-    user.token = token;
-    delete user.password;
+    //step 3: generate token
+    const token = generateToken({ id: user._id.toString() });
+
+    const userResponse = user.toObject();
+    userResponse.token = token;
+    delete userResponse.password;
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      data: {
-        ...user.toObject(),
-      },
+      data: userResponse,
     });
   } catch (err) {
     next(err);
