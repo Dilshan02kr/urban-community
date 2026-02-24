@@ -2,7 +2,6 @@ require("dotenv").config();
 require("./utils/database");
 
 const express = require("express");
-const userRoute = require("./modules/users/userRoute");
 const recyclingCenterRoutes = require("./modules/recycling/recling.Routes");
 const eventRoute = require("./modules/events/eventRoute");
 const issueRoute = require("./modules/issues/issueRoute");
