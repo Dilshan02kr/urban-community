@@ -14,18 +14,16 @@ const register = async (req, res, next) => {
 
     const organization = await Organization.create(value);
 
-    //step 3: generate token
     const token = generateToken({ id: organization._id });
 
-    organization.token = token;
-    delete organization.password;
+    const orgResponse = organization.toObject();
+    delete orgResponse.password;
+    orgResponse.token = token;
 
     return res.status(201).json({
       success: true,
       message: "Organization registered successfully",
-      data: {
-        ...organization.toObject(),
-      },
+      data: orgResponse,
     });
   } catch (err) {
     next(err);

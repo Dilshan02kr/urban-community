@@ -1,4 +1,5 @@
 const Citizen = require("./citizenModel");
+const { generateToken } = require("../../utils/tokenManager");
 
 const register = async (req, res, next) => {
   try {
@@ -17,15 +18,15 @@ const register = async (req, res, next) => {
     //step 3: generate token
     const token = generateToken({ id: user._id });
 
-    user.token = token;
+    const userResponse = user.toObject();
+    userResponse.token = token;
+    delete userResponse.password;
     delete user.password;
 
     return res.status(201).json({
       success: true,
       message: "Citizen registered successfully",
-      data: {
-        ...user.toObject(),
-      },
+      data: userResponse,
     });
   } catch (err) {
     next(err);
