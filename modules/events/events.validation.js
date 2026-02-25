@@ -16,4 +16,7 @@ const updateEventSchema = Joi.object({
   organization: Joi.string(),
 }).min(1);
 
-module.exports = { createEventSchema };
+module.exports = { 
+  createEventSchema, 
+  updateEventSchema 
+};
