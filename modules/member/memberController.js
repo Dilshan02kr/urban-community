@@ -1,19 +1,27 @@
-const User = require("../user/userModel");
+const mongoose = require("mongoose");
 const Event = require("../events/eventModel");
 const Member = require("./memberModel");
+const Citizen = require("../citizen/citizenModel");
 const { MEMBER_STATUS } = require("../../config/constant");
 
 const sendRequest = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const eventId = req.body.eventId;
 
+    if (!eventId || !mongoose.isValidObjectId(eventId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid event ID",
+      });
+    }
+
     //step 1: is valid user
-    const user = await User.findById(userId);
+    const user = await Citizen.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Citizen not found",
       });
     }
 
@@ -84,6 +92,14 @@ const sendRequest = async (req, res, next) => {
 const getRequests = async (req, res, next) => {
   try {
     const eventId = req.params.eventId;
+
+    if (!eventId || !mongoose.isValidObjectId(eventId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid event ID",
+      });
+    }
+
     //step 1: is valid event
     const event = await Event.findById(eventId);
     if (!event) {
@@ -102,7 +118,7 @@ const getRequests = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "users",
+          from: "citizens",
           localField: "userId",
           foreignField: "_id",
           as: "userDetails",
@@ -142,7 +158,14 @@ const getRequests = async (req, res, next) => {
 const responseRequest = async (req, res, next) => {
   try {
     const requestId = req.params.requestId;
-    const { status } = req.body;
+    const { status } = req.validatedBody ?? req.body;
+
+    if (!requestId || !mongoose.isValidObjectId(requestId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request ID",
+      });
+    }
 
     //step 1: is valid request
     const request = await Member.aggregate([
@@ -175,7 +198,15 @@ const responseRequest = async (req, res, next) => {
 const getMembers = async (req, res, next) => {
   try {
     const eventId = req.params.eventId;
-    const organizationId = req.user._id;
+    const organizationId = req.user.id;
+
+    if (!eventId || !mongoose.isValidObjectId(eventId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid event ID",
+      });
+    }
+
     //step 1: is valid event
     const event = await Event.findById(eventId);
     if (!event) {
@@ -211,7 +242,7 @@ const getMembers = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "users",
+          from: "citizens",
           localField: "userId",
           foreignField: "_id",
           as: "userDetails",
@@ -250,8 +281,8 @@ const getMembers = async (req, res, next) => {
 
 const deleteMember = async (req, res, next) => {
   try {
-    const eventId = req.body.eventId;
-    const memberId = req.body.memberId;
+    const { eventId, memberId } = req.validatedBody;
+
     //step 1: is valid event
     const event = await Event.findById(eventId);
     if (!event) {
