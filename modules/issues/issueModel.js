@@ -40,12 +40,12 @@ const issueSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "In progress", "Resolved", "Rejected"],
+      enum: ["Pending", "InProgress", "Resolved", "Rejected"],
       default: "Pending",
     },
     citizen: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Citizen",
       required: true,
     },
     adminResponse: {
@@ -68,11 +68,10 @@ issueSchema.index({ category: 1 });
 issueSchema.index({ citizen: 1 });
 issueSchema.index({ createdAt: -1 });
 
-issueSchema.pre("save", function (next) {
+issueSchema.pre("save", function () {
   if (this.isModified("status") && this.status === "Resolved") {
     this.resolvedAt = new Date();
   }
-  // next();
 });
 
 const Issue = mongoose.model("Issue", issueSchema);

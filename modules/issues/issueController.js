@@ -5,7 +5,7 @@ exports.createIssue = async (req, res) => {
   try {
     const issue = await Issue.create({
       ...req.validatedBody,
-      citizen: /*req.user.id*/ "69998a88f5a4ccb1cb74b9df",
+      citizen: req.user.id,
       image: req.file ? req.file.path : null,
     });
 
@@ -105,6 +105,49 @@ exports.getIssuesByUser = async (req, res) => {
       data: issues,
     });
   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+exports.updateIssueStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.validatedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id);
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    issue.status = status;
+    await issue.save();
+
+    const updatedIssue = await Issue.findById(id).populate(
+      "citizen",
+      "name email",
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: updatedIssue,
+      message: `Issue status updated to ${status}`,
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
       success: false,
       message: error.message || "Server error",

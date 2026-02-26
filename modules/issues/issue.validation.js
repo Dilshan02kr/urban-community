@@ -35,4 +35,16 @@ const createIssueSchema = joi.object({
   }),
 });
 
-module.exports = { createIssueSchema };
+const updateIssueStatusSchema = joi.object({
+  status: joi
+    .string()
+    .valid("Pending", "InProgress", "Resolved", "Rejected")
+    .required()
+    .messages({
+      "string.empty": "Status is required",
+      "any.only":
+        "Status must be one of: Pending, In progress, Resolved, Rejected",
+    }),
+});
+
+module.exports = { createIssueSchema, updateIssueStatusSchema };
