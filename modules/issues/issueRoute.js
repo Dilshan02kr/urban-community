@@ -5,6 +5,7 @@ const validate = require("../../middlewares/validate");
 const {
   createIssueSchema,
   updateIssueStatusSchema,
+  adminResponseSchema,
 } = require("./issue.validation");
 const issueController = require("./issueController");
 const upload = require("../../middlewares/upload.middleware");
@@ -29,6 +30,13 @@ router.patch(
   userAuth,
   validate(updateIssueStatusSchema),
   issueController.updateIssueStatus,
+);
+
+router.patch(
+  "/:id/admin-response",
+  userAuth,
+  validate(adminResponseSchema),
+  issueController.addAdminResponse,
 );
 
 router.delete("/:id", userAuth, issueController.deleteIssue);

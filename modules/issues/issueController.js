@@ -155,6 +155,49 @@ exports.updateIssueStatus = async (req, res) => {
   }
 };
 
+exports.addAdminResponse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { adminResponse } = req.validatedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id);
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    issue.adminResponse = adminResponse;
+    await issue.save();
+
+    const updatedIssue = await Issue.findById(id).populate(
+      "citizen",
+      "name email",
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: updatedIssue,
+      message: "Admin response added successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
 exports.deleteIssue = async (req, res) => {
   try {
     const { id } = req.params;

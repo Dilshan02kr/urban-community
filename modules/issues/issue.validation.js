@@ -47,4 +47,16 @@ const updateIssueStatusSchema = joi.object({
     }),
 });
 
-module.exports = { createIssueSchema, updateIssueStatusSchema };
+const adminResponseSchema = joi.object({
+  adminResponse: joi.string().min(1).max(2000).trim().required().messages({
+    "string.min": "Admin response must be at least 1 character",
+    "string.max": "Admin response must be at most 2000 characters",
+    "string.empty": "Admin response is required",
+  }),
+});
+
+module.exports = {
+  createIssueSchema,
+  updateIssueStatusSchema,
+  adminResponseSchema,
+};
