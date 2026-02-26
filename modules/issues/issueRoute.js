@@ -19,7 +19,9 @@ router.post(
   issueController.createIssue,
 );
 
-router.get("/",userAuth, issueController.getAllIssues);
+router.get("/", userAuth, issueController.getAllIssues);
+
+router.get("/analytics/summary", userAuth, issueController.getIssueAnalytics);
 
 router.get("/:id", userAuth, issueController.getIssueById);
 

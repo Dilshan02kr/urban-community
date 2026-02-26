@@ -22,6 +22,69 @@ exports.createIssue = async (req, res) => {
   }
 };
 
+exports.getIssueAnalytics = async (req, res) => {
+  try {
+    const totalIssues = await Issue.countDocuments();
+
+    const analytics = await Issue.aggregate([
+      {
+        $facet: {
+          byStatus: [
+            {
+              $group: {
+                _id: "$status",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+          byCategory: [
+            {
+              $group: {
+                _id: "$category",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const statusData = analytics[0].byStatus;
+    const categoryData = analytics[0].byCategory;
+
+    const formatData = (arr) =>
+      arr.reduce((acc, item) => {
+        acc[item._id || "unknown"] = item.count;
+        return acc;
+      }, {});
+
+    const statusSummary = formatData(statusData);
+    const categorySummary = formatData(categoryData);
+
+    const resolvedCount =
+      statusSummary.Resolved ?? statusSummary.resolved ?? 0;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalIssues,
+        byStatus: statusSummary,
+        byCategory: categorySummary,
+        resolvedPercentage:
+          totalIssues > 0
+            ? ((resolvedCount / totalIssues) * 100).toFixed(2) + "%"
+            : "0%",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 exports.getAllIssues = async (req, res) => {
   try {
     const { page = 1, limit = 10, status, category } = req.query;
