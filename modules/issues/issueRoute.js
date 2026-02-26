@@ -2,24 +2,35 @@ const express = require("express");
 const router = express.Router();
 
 const validate = require("../../middlewares/validate");
-const { createIssueSchema } = require("./issue.validation");
+const {
+  createIssueSchema,
+  updateIssueStatusSchema,
+} = require("./issue.validation");
 const issueController = require("./issueController");
 const upload = require("../../middlewares/upload.middleware");
+const userAuth = require("../../middlewares/userAuth");
 
 router.post(
   "/create",
-  // authMiddleware,
+  userAuth,
   upload.single("image"),
   validate(createIssueSchema),
   issueController.createIssue,
 );
 
-router.get("/", issueController.getAllIssues);
+router.get("/",userAuth, issueController.getAllIssues);
 
-router.get("/:id", issueController.getIssueById);
+router.get("/:id", userAuth, issueController.getIssueById);
 
-router.get("/user/:userId", issueController.getIssuesByUser);
+router.get("/user/:userId", userAuth, issueController.getIssuesByUser);
 
-router.delete("/:id", issueController.deleteIssue);
+router.patch(
+  "/:id/status",
+  userAuth,
+  validate(updateIssueStatusSchema),
+  issueController.updateIssueStatus,
+);
+
+router.delete("/:id", userAuth, issueController.deleteIssue);
 
 module.exports = router;
