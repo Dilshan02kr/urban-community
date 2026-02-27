@@ -48,7 +48,7 @@ const getCenterById = async (req, res) => {
 // POST create new center
 const createCenter = async (req, res) => {
   try {
-    const newCenter = await RecyclingCenter.create(req.body);
+    const newCenter = await RecyclingCenter.create(req.validatedBody);
     res.status(201).json(newCenter);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -60,7 +60,7 @@ const updateCenter = async (req, res) => {
   try {
     const center = await RecyclingCenter.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      req.validatedBody,
       { new: true, runValidators: true },
     );
 
@@ -92,14 +92,11 @@ const deleteCenter = async (req, res) => {
 
 const createPickupRequest = async (req, res) => {
   try {
-    const { wasteType, quantityKg, pickupDate, address, city, notes, userId } =
+    const { wasteType, quantityKg, pickupDate, address, city, notes } =
       req.validatedBody;
 
-    // if you have auth middleware, you can use req.user._id
-    const resolvedUserId = req.user?._id || userId;
-
     const pickupRequest = await PickupRequest.create({
-      userId: resolvedUserId,
+      userId: req.user.id,
       wasteType,
       quantityKg,
       pickupDate,
@@ -120,7 +117,7 @@ const createPickupRequest = async (req, res) => {
 // Get my pickup requests
 const getMyPickupRequests = async (req, res) => {
   try {
-    const userId = req.user?._id;
+    const userId = req.user.id;
 
     const requests = await PickupRequest.find({ userId }).sort({
       createdAt: -1,
@@ -132,7 +129,7 @@ const getMyPickupRequests = async (req, res) => {
   }
 };
 
-// Get all pickup requests
+// Get all pickup requestss
 const getAllPickupRequests = async (req, res) => {
   try {
     const requests = await PickupRequest.find()

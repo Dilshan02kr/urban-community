@@ -25,7 +25,6 @@ app.use("/api/recycling", recyclingCenterRoutes);
 app.use("/api/events", eventRoute);
 app.use("/api/issues", issueRoute);
 
-
 app.use(errorHandler);
 
 app.listen(PORT, () => {

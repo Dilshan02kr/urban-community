@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../../middlewares/validate");
+const userAuth = require("../../middlewares/userAuth");
+const adminAuth = require("../../middlewares/AdminAuth");
 
 const {
   getAllCenters,
@@ -15,6 +17,8 @@ const {
 } = require("./recycling.Controller");
 
 const {
+  createCenterSchema,
+  updateCenterSchema,
   createPickupRequestSchema,
   updatePickupStatusSchema,
 } = require("./recycling.validation");
@@ -26,30 +30,37 @@ router.get("/centers", getAllCenters);
 router.get("/centers/:id", getCenterById);
 
 // POST create center
-router.post("/centers", createCenter);
+router.post("/centers", adminAuth, validate(createCenterSchema), createCenter);
 
 // PUT update center
-router.put("/centers/:id", updateCenter);
+router.put(
+  "/centers/:id",
+  adminAuth,
+  validate(updateCenterSchema),
+  updateCenter,
+);
 
 // DELETE center
-router.delete("/centers/:id", deleteCenter);
+router.delete("/centers/:id", adminAuth, deleteCenter);
 
 // Citizen create pickup request
 router.post(
   "/request-pickup",
+  userAuth,
   validate(createPickupRequestSchema),
   createPickupRequest,
 );
 
 // Citizen view my pickup requests
-router.get("/pickups/my", getMyPickupRequests);
+router.get("/pickups/my", userAuth, getMyPickupRequests);
 
 // Admin view all pickup requests
-router.get("/pickups", getAllPickupRequests);
+router.get("/pickups", adminAuth, getAllPickupRequests);
 
 // Admin update pickup request status
 router.put(
   "/pickups/:id/status",
+  adminAuth,
   validate(updatePickupStatusSchema),
   updatePickupStatus,
 );

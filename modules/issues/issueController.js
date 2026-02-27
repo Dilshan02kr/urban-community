@@ -5,13 +5,76 @@ exports.createIssue = async (req, res) => {
   try {
     const issue = await Issue.create({
       ...req.validatedBody,
-      citizen: /*req.user.id*/ "69998a88f5a4ccb1cb74b9df",
+      citizen: req.user.id,
       image: req.file ? req.file.path : null,
     });
 
     return res.status(201).json({
       success: true,
       data: issue,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+exports.getIssueAnalytics = async (req, res) => {
+  try {
+    const totalIssues = await Issue.countDocuments();
+
+    const analytics = await Issue.aggregate([
+      {
+        $facet: {
+          byStatus: [
+            {
+              $group: {
+                _id: "$status",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+          byCategory: [
+            {
+              $group: {
+                _id: "$category",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const statusData = analytics[0].byStatus;
+    const categoryData = analytics[0].byCategory;
+
+    const formatData = (arr) =>
+      arr.reduce((acc, item) => {
+        acc[item._id || "unknown"] = item.count;
+        return acc;
+      }, {});
+
+    const statusSummary = formatData(statusData);
+    const categorySummary = formatData(categoryData);
+
+    const resolvedCount =
+      statusSummary.Resolved ?? statusSummary.resolved ?? 0;
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalIssues,
+        byStatus: statusSummary,
+        byCategory: categorySummary,
+        resolvedPercentage:
+          totalIssues > 0
+            ? ((resolvedCount / totalIssues) * 100).toFixed(2) + "%"
+            : "0%",
+      },
     });
   } catch (error) {
     console.error(error);
@@ -105,6 +168,92 @@ exports.getIssuesByUser = async (req, res) => {
       data: issues,
     });
   } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+exports.updateIssueStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.validatedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id);
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    issue.status = status;
+    await issue.save();
+
+    const updatedIssue = await Issue.findById(id).populate(
+      "citizen",
+      "name email",
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: updatedIssue,
+      message: `Issue status updated to ${status}`,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+exports.addAdminResponse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { adminResponse } = req.validatedBody;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id);
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    issue.adminResponse = adminResponse;
+    await issue.save();
+
+    const updatedIssue = await Issue.findById(id).populate(
+      "citizen",
+      "name email",
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: updatedIssue,
+      message: "Admin response added successfully",
+    });
+  } catch (error) {
+    console.error(error);
     return res.status(500).json({
       success: false,
       message: error.message || "Server error",

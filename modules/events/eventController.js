@@ -1,5 +1,6 @@
 const Event = require("./eventModel");
 
+//create event
 const createEvent = async (req, res, next) => {
   try {
     const eventData = req.validatedBody; 
@@ -15,6 +16,7 @@ const createEvent = async (req, res, next) => {
   }
 };
 
+//update event
 const updateEvent = async (req, res, next) => {
   try {
     const { id } = req.params; 
@@ -42,6 +44,7 @@ const updateEvent = async (req, res, next) => {
   }
 };
 
+//delete event
 const deleteEvent = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -63,8 +66,46 @@ const deleteEvent = async (req, res, next) => {
   }
 };
 
+//get all events
+const getAllEvents = async (req, res, next) => {
+  try {
+    const events = await Event.find().sort({ date: 1 });
+
+    return res.status(200).json({
+      success: true,
+      count: events.length,
+      data: events,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//get one event
+const getEventById = async (req, res, next) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: event,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = { 
   createEvent, 
   updateEvent, 
-  deleteEvent 
+  deleteEvent,
+  getAllEvents,
+  getEventById
 };

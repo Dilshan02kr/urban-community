@@ -3,12 +3,17 @@ const eventController = require("./eventController");
 const validate = require("../../middlewares/validate");
 const { createEventSchema, updateEventSchema } = require("./events.validation");
 
+const auth = require("../../middlewares/userAuth");
+
 const router = express.Router();
 
-router.post("/", validate(createEventSchema), eventController.createEvent);
+router.get("/", eventController.getAllEvents);
+router.get("/:id", eventController.getEventById);
 
-router.put("/:id", validate(updateEventSchema), eventController.updateEvent);
 
-router.delete("/:id", eventController.deleteEvent);
+//added authentication
+router.post("/", auth, validate(createEventSchema), eventController.createEvent);
+router.put("/:id", auth, validate(updateEventSchema), eventController.updateEvent);
+router.delete("/:id", auth, eventController.deleteEvent);
 
 module.exports = router;
