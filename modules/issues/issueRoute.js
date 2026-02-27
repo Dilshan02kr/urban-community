@@ -2,24 +2,45 @@ const express = require("express");
 const router = express.Router();
 
 const validate = require("../../middlewares/validate");
-const { createIssueSchema } = require("./issue.validation");
+const {
+  createIssueSchema,
+  updateIssueStatusSchema,
+  adminResponseSchema,
+} = require("./issue.validation");
 const issueController = require("./issueController");
 const upload = require("../../middlewares/upload.middleware");
+const userAuth = require("../../middlewares/userAuth");
 
 router.post(
   "/create",
-  // authMiddleware,
+  userAuth,
   upload.single("image"),
   validate(createIssueSchema),
   issueController.createIssue,
 );
 
-router.get("/", issueController.getAllIssues);
+router.get("/", userAuth, issueController.getAllIssues);
 
-router.get("/:id", issueController.getIssueById);
+router.get("/analytics/summary", userAuth, issueController.getIssueAnalytics);
 
-router.get("/user/:userId", issueController.getIssuesByUser);
+router.get("/:id", userAuth, issueController.getIssueById);
 
-router.delete("/:id", issueController.deleteIssue);
+router.get("/user/:userId", userAuth, issueController.getIssuesByUser);
+
+router.patch(
+  "/:id/status",
+  userAuth,
+  validate(updateIssueStatusSchema),
+  issueController.updateIssueStatus,
+);
+
+router.patch(
+  "/:id/admin-response",
+  userAuth,
+  validate(adminResponseSchema),
+  issueController.addAdminResponse,
+);
+
+router.delete("/:id", userAuth, issueController.deleteIssue);
 
 module.exports = router;
