@@ -229,12 +229,12 @@ const getMembers = async (req, res, next) => {
       },
     ]);
 
-    // if (user.length === 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "You are not authorized to access this event",
-    //   });
-    // }
+    if (user.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "You are not authorized to access this event",
+      });
+    }
 
     //step 3: get all members
     const members = await Member.aggregate([
