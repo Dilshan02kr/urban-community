@@ -7,6 +7,7 @@ const auth = require("../../middlewares/userAuth");
 
 const router = express.Router();
 
+//read
 router.get("/", eventController.getAllEvents);
 router.get("/:id", eventController.getEventById);
 
