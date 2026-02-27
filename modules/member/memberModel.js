@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-import { MEMBER_STATUS } from "../../config/constant";
+const { MEMBER_STATUS } = require("../../config/constant");
 
 const memberSchema = new mongoose.Schema({
-  _id: { type: Schema.Types.ObjectId, required: true, auto: true },
+  _id: { type: mongoose.Schema.Types.ObjectId, required: true, auto: true },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Citizen",
     required: true,
   },
   eventId: {
@@ -27,6 +27,8 @@ const memberSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+memberSchema.index({ createdAt: -1 });
 
 const Member = mongoose.model("Member", memberSchema);
 

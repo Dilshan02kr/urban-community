@@ -14,7 +14,13 @@ const citizenSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
+
+citizenSchema.index({ createdAt: -1 });
 
 const Citizen = mongoose.model("Citizen", citizenSchema);
 
