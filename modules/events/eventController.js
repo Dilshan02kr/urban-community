@@ -1,5 +1,6 @@
 const Event = require("./eventModel");
 
+//create event
 const createEvent = async (req, res, next) => {
   try {
     const eventData = req.validatedBody; 
@@ -15,6 +16,7 @@ const createEvent = async (req, res, next) => {
   }
 };
 
+//update event
 const updateEvent = async (req, res, next) => {
   try {
     const { id } = req.params; 
@@ -42,6 +44,7 @@ const updateEvent = async (req, res, next) => {
   }
 };
 
+//delete event
 const deleteEvent = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -62,6 +65,8 @@ const deleteEvent = async (req, res, next) => {
     next(err);
   }
 };
+
+//get all events
 const getAllEvents = async (req, res, next) => {
   try {
     const events = await Event.find().sort({ date: 1 });
@@ -76,6 +81,7 @@ const getAllEvents = async (req, res, next) => {
   }
 };
 
+//get one event
 const getEventById = async (req, res, next) => {
   try {
     const event = await Event.findById(req.params.id);
