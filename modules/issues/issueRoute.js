@@ -10,6 +10,7 @@ const {
 const issueController = require("./issueController");
 const upload = require("../../middlewares/upload.middleware");
 const userAuth = require("../../middlewares/userAuth");
+const adminAuth = require("../../middlewares/AdminAuth");
 
 router.post(
   "/create",
@@ -19,9 +20,9 @@ router.post(
   issueController.createIssue,
 );
 
-router.get("/", userAuth, issueController.getAllIssues);
+router.get("/", adminAuth, issueController.getAllIssues);
 
-router.get("/analytics/summary", userAuth, issueController.getIssueAnalytics);
+router.get("/analytics/summary", adminAuth, issueController.getIssueAnalytics);
 
 router.get("/:id", userAuth, issueController.getIssueById);
 
@@ -29,14 +30,14 @@ router.get("/user/:userId", userAuth, issueController.getIssuesByUser);
 
 router.patch(
   "/:id/status",
-  userAuth,
+  adminAuth,
   validate(updateIssueStatusSchema),
   issueController.updateIssueStatus,
 );
 
 router.patch(
   "/:id/admin-response",
-  userAuth,
+  adminAuth,
   validate(adminResponseSchema),
   issueController.addAdminResponse,
 );
