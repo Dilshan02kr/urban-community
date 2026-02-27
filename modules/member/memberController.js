@@ -112,7 +112,7 @@ const getRequests = async (req, res, next) => {
     const requests = await Member.aggregate([
       {
         $match: {
-          eventId: eventId,
+          eventId: new mongoose.Types.ObjectId(eventId),
           status: MEMBER_STATUS.PENDING,
         },
       },
@@ -132,7 +132,11 @@ const getRequests = async (req, res, next) => {
           _id: 1,
           userId: 1,
           createdAt: 1,
-          userDetails: 1,
+          userDetails: {
+            _id: "$userDetails._id",
+            name: "$userDetails.name",
+            email: "$userDetails.email",
+          },
         },
       },
     ]);
@@ -171,7 +175,7 @@ const responseRequest = async (req, res, next) => {
     const request = await Member.aggregate([
       {
         $match: {
-          _id: requestId,
+          _id: new mongoose.Types.ObjectId(requestId),
           status: MEMBER_STATUS.PENDING,
         },
       },
@@ -225,18 +229,18 @@ const getMembers = async (req, res, next) => {
       },
     ]);
 
-    if (user.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "You are not authorized to access this event",
-      });
-    }
+    // if (user.length === 0) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "You are not authorized to access this event",
+    //   });
+    // }
 
     //step 3: get all members
     const members = await Member.aggregate([
       {
         $match: {
-          eventId: eventId,
+          eventId: new mongoose.Types.ObjectId(eventId),
           status: MEMBER_STATUS.ACCEPTED,
         },
       },
@@ -256,7 +260,12 @@ const getMembers = async (req, res, next) => {
           _id: 1,
           userId: 1,
           createdAt: 1,
-          userDetails: 1,
+          status: 1,
+          userDetails: {
+            _id: "$userDetails._id",
+            name: "$userDetails.name",
+            email: "$userDetails.email",
+          },
         },
       },
     ]);
