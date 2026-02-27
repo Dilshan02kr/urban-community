@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const validate = require("../../middlewares/validate");
 const userAuth = require("../../middlewares/userAuth");
+const adminAuth = require("../../middlewares/AdminAuth");
 
 const {
   getAllCenters,
@@ -29,18 +30,18 @@ router.get("/centers", getAllCenters);
 router.get("/centers/:id", getCenterById);
 
 // POST create center
-router.post("/centers", userAuth, validate(createCenterSchema), createCenter);
+router.post("/centers", adminAuth, validate(createCenterSchema), createCenter);
 
 // PUT update center
 router.put(
   "/centers/:id",
-  userAuth,
+  adminAuth,
   validate(updateCenterSchema),
   updateCenter,
 );
 
 // DELETE center
-router.delete("/centers/:id", userAuth, deleteCenter);
+router.delete("/centers/:id", adminAuth, deleteCenter);
 
 // Citizen create pickup request
 router.post(
@@ -54,12 +55,12 @@ router.post(
 router.get("/pickups/my", userAuth, getMyPickupRequests);
 
 // Admin view all pickup requests
-router.get("/pickups", userAuth, getAllPickupRequests);
+router.get("/pickups", adminAuth, getAllPickupRequests);
 
 // Admin update pickup request status
 router.put(
   "/pickups/:id/status",
-  userAuth,
+  adminAuth,
   validate(updatePickupStatusSchema),
   updatePickupStatus,
 );
