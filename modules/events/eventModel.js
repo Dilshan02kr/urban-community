@@ -6,6 +6,11 @@ const eventSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   location: { type: String, required: true },
   organization: { type: String, required: true },
+  orgId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

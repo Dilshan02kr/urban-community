@@ -1,9 +1,13 @@
 const Event = require("./eventModel");
 
-//create event
+// Create event
 const createEvent = async (req, res, next) => {
   try {
-    const eventData = req.validatedBody; 
+    const eventData = {
+      ...req.validatedBody,
+      orgId: req.user.id 
+    };
+
     const newEvent = await Event.create(eventData);
 
     return res.status(201).json({
