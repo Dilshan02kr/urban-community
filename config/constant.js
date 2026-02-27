@@ -4,6 +4,6 @@ const MEMBER_STATUS = {
     REJECTED: "Rejected",
 }
 
-exports = {
+module.exports = {
     MEMBER_STATUS,
 }

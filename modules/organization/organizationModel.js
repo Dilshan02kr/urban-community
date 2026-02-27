@@ -27,8 +27,13 @@ const organizationSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
+organizationSchema.index({ createdAt: -1 });
 organizationSchema.pre("save", async function () {
     if (!this.isModified("password")) {
         return;

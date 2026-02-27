@@ -3,17 +3,17 @@ const { generateToken } = require("../../utils/tokenManager");
 
 const register = async (req, res, next) => {
   try {
-    const body = req.body;
+    const value = req.validatedBody;
 
     //step 1: check if the user is already registered
-    const existingUser = await Citizen.findOne({ email: body.email });
+    const existingUser = await Citizen.findOne({ email: value.email });
     if (existingUser) {
       return res
         .status(409)
         .json({ success: false, message: "Email already registered" });
     }
 
-    const user = await Citizen.create(body);
+    const user = await Citizen.create(value);
 
     //step 3: generate token
     const token = generateToken({ id: user._id });
