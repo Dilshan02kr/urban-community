@@ -8,7 +8,7 @@ const eventSchema = new mongoose.Schema({
   organization: { type: String, required: true },
   orgId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: "User", 
+    ref: "Organization", 
     required: true 
   },
   createdAt: { type: Date, default: Date.now },
