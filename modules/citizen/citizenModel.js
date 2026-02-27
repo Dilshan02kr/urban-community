@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const citizenSchema = new mongoose.Schema({
   name: {
@@ -22,6 +23,12 @@ const citizenSchema = new mongoose.Schema({
 
 citizenSchema.index({ createdAt: -1 });
 
-const Citizen = mongoose.model("Citizen", citizenSchema);
+citizenSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+      return;
+  }
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
+const Citizen = mongoose.model("Citizen", citizenSchema);
 module.exports = Citizen;
