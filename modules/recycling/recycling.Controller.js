@@ -129,7 +129,7 @@ const getMyPickupRequests = async (req, res) => {
   }
 };
 
-// Get all pickup requests
+// Get all pickup requestss
 const getAllPickupRequests = async (req, res) => {
   try {
     const requests = await PickupRequest.find()
