@@ -1,13 +1,30 @@
+import { useCallback, useState } from 'react'
+import { Navbar } from '@/features/home/components/Navbar'
+import { HeroSection } from '@/features/home/components/HeroSection'
+import { FeaturesSection } from '@/features/home/components/FeaturesSection'
+import { RolesSection } from '@/features/home/components/RolesSection'
+import { HowItWorksSection } from '@/features/home/components/HowItWorksSection'
+import { CtaSection } from '@/features/home/components/CtaSection'
+import { Footer } from '@/features/home/components/Footer'
+import { RegisterModal } from '@/features/home/components/RegisterModal'
+
 export function HomePage() {
+  const [registerOpen, setRegisterOpen] = useState(false)
+  const openRegister = useCallback(() => setRegisterOpen(true), [])
+  const closeRegister = useCallback(() => setRegisterOpen(false), [])
+
   return (
-    <section className="page">
-      <h1>Urban Community</h1>
-      <p className="page__lead">
-        React frontend scaffold. API calls can use{' '}
-        <code>apiRequest(&apos;/api/...&apos;)</code> with{' '}
-        <code>VITE_API_BASE_URL</code> empty in dev (Vite proxies{' '}
-        <code>/api</code> to your Express server).
-      </p>
-    </section>
+    <div id="top" className="min-h-screen bg-slate-950 text-white">
+      <Navbar onRegisterClick={openRegister} />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <RolesSection />
+        <HowItWorksSection />
+        <CtaSection onRegisterClick={openRegister} />
+      </main>
+      <Footer />
+      <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
+    </div>
   )
 }
