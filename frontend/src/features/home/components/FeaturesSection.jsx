@@ -9,16 +9,16 @@ export function FeaturesSection() {
       aria-labelledby="features-heading"
     >
       <div className="mx-auto max-w-3xl text-center">
-        <span className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">
+        <span className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-soft">
           Core features
         </span>
         <h2
           id="features-heading"
-          className="mt-4 text-3xl font-bold text-white sm:text-4xl"
+          className="mt-4 text-3xl font-bold text-fg sm:text-4xl"
         >
           Everything your community needs in one platform
         </h2>
-        <p className="mt-4 text-base leading-8 text-slate-400">
+        <p className="mt-4 text-base leading-8 text-fg-subtle">
           Designed to connect citizens, organizations, and sustainability efforts
           through one modern digital experience.
         </p>

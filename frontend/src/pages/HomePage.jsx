@@ -14,7 +14,7 @@ export function HomePage() {
   const closeRegister = useCallback(() => setRegisterOpen(false), [])
 
   return (
-    <div id="top" className="min-h-screen bg-slate-950 text-white">
+    <div id="top" className="min-h-screen bg-page text-fg">
       <Navbar onRegisterClick={openRegister} />
       <main>
         <HeroSection />

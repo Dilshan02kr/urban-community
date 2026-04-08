@@ -25,13 +25,13 @@ export function RegisterEntryPage() {
 
   return (
     <section className="page max-w-xl">
-      <h1 className="text-2xl font-semibold text-slate-100">{content.title}</h1>
-      <p className="mt-3 leading-relaxed text-slate-400">{content.description}</p>
-      <p className="mt-6 text-sm text-slate-500">
+      <h1 className="text-2xl font-semibold text-fg-alt">{content.title}</h1>
+      <p className="mt-3 leading-relaxed text-fg-subtle">{content.description}</p>
+      <p className="mt-6 text-sm text-fg-faint">
         Registration form will be available here in a future update.
       </p>
       <p className="mt-6">
-        <Link to={ROUTES.HOME} className="text-emerald-400 hover:text-emerald-300">
+        <Link to={ROUTES.HOME} className="text-accent-hover hover:text-accent-soft">
           ← Back home
         </Link>
       </p>
