@@ -1,3 +1,30 @@
+import { ROUTES } from '@/constants/routes'
+
+export const REGISTER_MODAL_CARDS = [
+  {
+    id: 'civilian',
+    title: 'Register as a civilian',
+    description:
+      'Report civic issues, follow updates, join eco events, and stay connected with initiatives in your area.',
+    image:
+      'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=640&q=80',
+    imageAlt: 'Neighbors talking together in a community space',
+    to: ROUTES.REGISTER_CIVILIAN,
+    accent: 'emerald',
+  },
+  {
+    id: 'organization',
+    title: 'Register as an organization',
+    description:
+      'Host sustainability programs, publish events, and collaborate with citizens to drive local impact.',
+    image:
+      'https://unsplash.com/photos/skyscrapers-against-a-dusky-purple-sunset-sky-QHxtB10U0y8',
+    imageAlt: 'Modern city buildings at dusk',
+    to: ROUTES.REGISTER_ORGANIZATION,
+    accent: 'sky',
+  },
+]
+
 export const NAV_ITEMS = [
   { label: 'Home', href: '#top' },
   { label: 'Report Issues', href: '#features' },

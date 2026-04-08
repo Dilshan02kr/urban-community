@@ -1,4 +1,4 @@
-export function CtaSection() {
+export function CtaSection({ onRegisterClick }) {
   return (
     <section
       id="cta"
@@ -23,6 +23,7 @@ export function CtaSection() {
           <button
             type="button"
             className="rounded-2xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-emerald-400"
+            onClick={onRegisterClick}
           >
             Create an Account
           </button>

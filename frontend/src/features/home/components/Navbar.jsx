@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import { NAV_ITEMS } from '@/features/home/data/homeContent'
 
-export function Navbar() {
+export function Navbar({ onRegisterClick }) {
   const [open, setOpen] = useState(false)
   const menuId = useId()
 
@@ -38,7 +38,8 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="hidden rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-400/40 hover:bg-white/5 md:inline-flex"
+            className="inline-flex rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-400/40 hover:bg-white/5"
+            onClick={onRegisterClick}
           >
             Register
           </button>
