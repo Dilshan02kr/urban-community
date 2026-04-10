@@ -30,7 +30,7 @@ export default function Button({
 
   const variants = {
     primary: {
-      background: "var(--primary-blue)",
+      background: "#0d6efd",
       color: "#fff",
     },
     outline: {
@@ -59,7 +59,7 @@ export default function Button({
       }}
       onMouseLeave={(e) => {
         if (!disabled && !loading) {
-          if (variant === "primary") e.currentTarget.style.background = "var(--primary-blue)";
+          if (variant === "primary") e.currentTarget.style.background = "#0d6efd";
           if (variant === "outline") e.currentTarget.style.borderColor = "#e2e8f0";
         }
       }}

@@ -12,12 +12,14 @@ const userRoute = require("./modules/user/user.route");
 const memberRoute = require("./modules/member/member.route");
 const adminRoute = require("./modules/admin/admin.route");
 const app = express();
+const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
-app.use("/api/citizens", citizenRoute);
-app.use("/api/organizations", organizationRoute);
+app.use("/api/civilian", citizenRoute);
+app.use("/api/organization", organizationRoute);
 app.use("/api/member", memberRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/users", userRoute);
