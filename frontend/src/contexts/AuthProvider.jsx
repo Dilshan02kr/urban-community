@@ -1,41 +1,56 @@
-import { useCallback, useMemo, useState } from 'react'
-import { AuthContext } from '@/contexts/authContext'
-import { authStorage } from '@/utils/storage'
+import { authService } from "@/services/auth.service";
+import { createContext, useContext, useEffect, useState } from "react";
+
+const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(() => authStorage.getToken())
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const login = useCallback((newToken, profile) => {
-    if (newToken !== undefined) {
-      if (newToken) authStorage.setToken(newToken)
-      else authStorage.removeToken()
-      setToken(newToken ?? null)
+  useEffect(() => {
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (accessToken) setIsAuthenticated(true);
+    setIsAuthReady(true);
+  }, []);
+
+  // Listen for 401 events dispatched by the API interceptor so we can
+  // update React state instead of doing a hard page reload.
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthenticated(false);
+    };
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () =>
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, []);
+
+  const login = async (email, password) => {
+    const body = await authService.login(email, password);
+    if (body.statusCode === 200 && body.data?.accessToken) {
+      setIsAuthenticated(true);
+      sessionStorage.setItem("accessToken", body.data.accessToken);
     }
-    if (profile !== undefined) {
-      setUser(profile)
-    }
-  }, [])
+    return body;
+  };
 
-  const logout = useCallback(() => {
-    authStorage.removeToken()
-    setToken(null)
-    setUser(null)
-  }, [])
-
-  const value = useMemo(
-    () => ({
-      user,
-      token,
-      isAuthenticated: Boolean(token),
-      login,
-      logout,
-      setUser,
-    }),
-    [user, token, login, logout],
-  )
+  const logout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem("accessToken");
+  };
 
   return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  )
+    <AuthContext.Provider
+      value={{ isAuthenticated, isAuthReady, login, logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
