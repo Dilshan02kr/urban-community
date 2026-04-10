@@ -5,14 +5,14 @@ import { REGISTER_MODAL_CARDS } from '@/features/home/data/homeContent'
 
 const ACCENT = {
   emerald: {
-    ring: 'hover:border-emerald-400/40 focus-within:border-emerald-400/50',
-    btn: 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/25 hover:bg-emerald-400',
-    badge: 'bg-emerald-500/15 text-emerald-300',
+    ring: 'hover:border-accent-hover/40 focus-within:border-accent-hover/50',
+    btn: 'bg-accent text-on-accent shadow-lg shadow-accent/25 hover:bg-accent-hover',
+    badge: 'bg-accent/15 text-accent-soft',
   },
   sky: {
-    ring: 'hover:border-sky-400/40 focus-within:border-sky-400/50',
-    btn: 'bg-sky-400 text-slate-950 shadow-lg shadow-sky-500/25 hover:bg-sky-300',
-    badge: 'bg-sky-500/15 text-sky-200',
+    ring: 'hover:border-sky-accent/40 focus-within:border-sky-accent/50',
+    btn: 'bg-sky-accent text-on-accent shadow-lg shadow-sky-muted/25 hover:bg-sky-accent-hover',
+    badge: 'bg-sky-muted/15 text-sky-soft',
   },
 }
 
@@ -43,7 +43,7 @@ export function RegisterModal({ isOpen, onClose }) {
     >
       <button
         type="button"
-        className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+        className="absolute inset-0 bg-page/80 backdrop-blur-md"
         aria-label="Close registration dialog"
         onClick={onClose}
       />
@@ -52,20 +52,20 @@ export function RegisterModal({ isOpen, onClose }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative z-10 w-full max-w-3xl rounded-[1.75rem] border border-white/10 bg-slate-900/95 p-6 shadow-2xl shadow-black/40 sm:p-8"
+        className="relative z-10 w-full max-w-3xl rounded-[1.75rem] border border-glass/10 bg-surface/95 p-6 shadow-2xl shadow-black/40 sm:p-8"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-accent-soft">
               Get started
             </p>
             <h2
               id={titleId}
-              className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl"
+              className="mt-2 text-2xl font-bold tracking-tight text-fg sm:text-3xl"
             >
               Create your account
             </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-fg-subtle">
               Choose how you want to join Urban Community. You can register as a
               citizen or as an organization.
             </p>
@@ -73,7 +73,7 @@ export function RegisterModal({ isOpen, onClose }) {
           <button
             ref={closeRef}
             type="button"
-            className="shrink-0 rounded-xl border border-white/10 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
+            className="shrink-0 rounded-xl border border-glass/10 px-3 py-2 text-sm font-medium text-fg-muted transition hover:border-glass/20 hover:bg-glass/5 hover:text-fg"
             onClick={onClose}
           >
             Close
@@ -86,7 +86,7 @@ export function RegisterModal({ isOpen, onClose }) {
             return (
               <article
                 key={card.id}
-                className={`group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-xl shadow-black/20 transition ${a.ring}`}
+                className={`group flex flex-col overflow-hidden rounded-2xl border border-glass/10 bg-glass/5 shadow-xl shadow-black/20 transition ${a.ring}`}
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
@@ -102,8 +102,8 @@ export function RegisterModal({ isOpen, onClose }) {
                   </div>
                 </div>
                 <div className="flex flex-1 flex-col p-5">
-                  <h3 className="text-lg font-bold text-white">{card.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">
+                  <h3 className="text-lg font-bold text-fg">{card.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-fg-subtle">
                     {card.description}
                   </p>
                   <Link

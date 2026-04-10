@@ -1,25 +1,27 @@
 import { useId, useState } from 'react'
 import { NAV_ITEMS } from '@/features/home/data/homeContent'
+import { useNavigate } from 'react-router-dom'
 
 export function Navbar({ onRegisterClick }) {
   const [open, setOpen] = useState(false)
   const menuId = useId()
+  const navigate = useNavigate()
 
   return (
     <nav
-      className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl"
+      className="sticky top-0 z-50 border-b border-glass/10 bg-page/80 backdrop-blur-xl"
       aria-label="Primary"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         <a href="#top" className="flex items-center gap-3 text-left">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/20 text-xl shadow-lg shadow-emerald-500/20">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/20 text-xl shadow-lg shadow-accent/20">
             🌍
           </div>
           <div>
-            <p className="text-lg font-bold tracking-wide text-white">
+            <p className="text-lg font-bold tracking-wide text-fg">
               Urban Community
             </p>
-            <p className="text-xs text-slate-400">Connect. Report. Improve.</p>
+            <p className="text-xs text-fg-subtle">Connect. Report. Improve.</p>
           </div>
         </a>
 
@@ -28,7 +30,7 @@ export function Navbar({ onRegisterClick }) {
             <a
               key={item.label}
               href={item.href}
-              className="text-sm font-medium text-slate-300 transition hover:text-emerald-400"
+              className="text-sm font-medium text-fg-muted transition hover:text-accent-hover"
             >
               {item.label}
             </a>
@@ -38,21 +40,22 @@ export function Navbar({ onRegisterClick }) {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="inline-flex rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-emerald-400/40 hover:bg-white/5"
+            className="inline-flex rounded-xl border border-glass/10 px-4 py-2 text-sm font-medium text-fg-soft transition hover:border-accent-hover/40 hover:bg-glass/5"
             onClick={onRegisterClick}
           >
             Register
           </button>
           <button
             type="button"
-            className="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/30 transition hover:scale-[1.02] hover:bg-emerald-400"
+            className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-on-accent shadow-lg shadow-accent/30 transition hover:scale-[1.02] hover:bg-accent-hover"
+            onClick={() => navigate('/login')}
           >
             Login
           </button>
 
           <button
             type="button"
-            className="inline-flex rounded-lg p-2 text-slate-300 hover:bg-white/10 md:hidden"
+            className="inline-flex rounded-lg p-2 text-fg-muted hover:bg-glass/10 md:hidden"
             aria-expanded={open}
             aria-controls={menuId}
             onClick={() => setOpen((v) => !v)}
@@ -66,14 +69,14 @@ export function Navbar({ onRegisterClick }) {
       {open ? (
         <div
           id={menuId}
-          className="border-t border-white/10 bg-slate-950/95 px-6 py-4 md:hidden"
+          className="border-t border-glass/10 bg-page/95 px-6 py-4 md:hidden"
         >
           <ul className="flex flex-col gap-3">
             {NAV_ITEMS.map((item) => (
               <li key={item.label}>
                 <a
                   href={item.href}
-                  className="block text-sm font-medium text-slate-300 hover:text-emerald-400"
+                  className="block text-sm font-medium text-fg-muted hover:text-accent-hover"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
