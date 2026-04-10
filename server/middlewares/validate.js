@@ -5,9 +5,11 @@ module.exports = (schema) => (req, res, next) => {
     });
   
     if (error) {
+      const message = error.details.map((detail) => detail.message).join(", ");
+
       return res.status(400).json({
         success: false,
-        errors: error.details.map((d) => d.message),
+        message,
       });
     }
 

@@ -18,15 +18,15 @@ const register = async (req, res, next) => {
     //step 3: generate token
     const token = generateToken({ id: user._id });
 
-    const userResponse = user.toObject();
-    userResponse.token = token;
+    let userResponse = user.toObject();
+    userResponse.role = "citizen";
     delete userResponse.password;
     delete user.password;
 
     return res.status(201).json({
       success: true,
       message: "Citizen registered successfully",
-      data: userResponse,
+      data: { token, user: userResponse },
     });
   } catch (err) {
     next(err);
