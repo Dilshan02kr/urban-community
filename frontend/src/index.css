@@ -1,0 +1,61 @@
+@import 'tailwindcss';
+
+/*
+ * Semantic color tokens — reference Tailwind’s default palette so values stay
+ * aligned with the framework, while component code uses stable names.
+ */
+@theme {
+  --color-page: var(--color-slate-950);
+  --color-surface: var(--color-slate-900);
+  --color-fg: var(--color-white);
+  --color-fg-soft: var(--color-slate-200);
+  --color-fg-muted: var(--color-slate-300);
+  --color-fg-subtle: var(--color-slate-400);
+  --color-fg-faint: var(--color-slate-500);
+  --color-fg-alt: var(--color-slate-100);
+  --color-accent: var(--color-emerald-500);
+  --color-accent-hover: var(--color-emerald-400);
+  --color-accent-soft: var(--color-emerald-300);
+  --color-accent-deep: var(--color-emerald-900);
+  --color-accent-shadow: var(--color-emerald-950);
+  --color-on-accent: var(--color-slate-950);
+  --color-glass: var(--color-white);
+  --color-sky-accent: var(--color-sky-400);
+  --color-sky-accent-hover: var(--color-sky-300);
+  --color-sky-muted: var(--color-sky-500);
+  --color-sky-soft: var(--color-sky-200);
+  --color-sky-shadow: var(--color-sky-950);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /*
+   * Legacy names used by App.css — keep in sync with semantic tokens above.
+   */
+  :root {
+    --border: color-mix(in oklch, var(--color-glass) 10%, transparent);
+    --surface: var(--color-page);
+    --text-heading: var(--color-fg);
+    --accent: var(--color-accent);
+    --text-muted: var(--color-fg-subtle);
+  }
+}
+
+@layer components {
+  .hero-backdrop {
+    background-image:
+      radial-gradient(
+        circle at top right,
+        color-mix(in oklch, var(--color-accent) 18%, transparent),
+        transparent 30%
+      ),
+      radial-gradient(
+        circle at bottom left,
+        color-mix(in oklch, var(--color-blue-500) 14%, transparent),
+        transparent 28%
+      );
+  }
+}
