@@ -11,6 +11,9 @@ import RegisterCivilian from "@/pages/RegisterCivilian";
 import { PublicRoute } from "./PublicRoute";
 import LoginPage from "@/pages/LoginPage";
 import RegisterOrganization from "@/pages/RegisterOrganization";
+import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
+import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
+import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +41,52 @@ const router = createBrowserRouter([
   {
     path: ROUTES.REGISTER_ORGANIZATION,
     element: <RegisterOrganization />,
+  },
+  {
+    path: ROUTES.DASHBOARD,
+    element: <CivilianDashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: <CivilianDashboardHomePage />,
+      },
+      {
+        path: "events",
+        element: (
+          <CivilianDashboardSubPage
+            title="Events"
+            description="Eco programs, clean-up drives, and community happenings."
+          />
+        ),
+      },
+      {
+        path: "issue-reporting",
+        element: (
+          <CivilianDashboardSubPage
+            title="Issue Reporting"
+            description="Report civic issues and track responses from your area."
+          />
+        ),
+      },
+      {
+        path: "garbage-collectors",
+        element: (
+          <CivilianDashboardSubPage
+            title="Garbage collectors"
+            description="Schedules, contacts, and waste collection information."
+          />
+        ),
+      },
+      {
+        path: "about",
+        element: (
+          <CivilianDashboardSubPage
+            title="About"
+            description="Urban Community — connect, report, and improve your city."
+          />
+        ),
+      },
+    ],
   },
   // not found route
   {

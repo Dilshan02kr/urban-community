@@ -3,6 +3,7 @@ import { Button, Input } from "@/components/ui";
 import { Lock, Mail, User } from "lucide-react";
 import { useCivilian } from "@/contexts/CivilianProvider";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export default function RegisterCivilian() {
   const { register } = useCivilian();
@@ -39,7 +40,7 @@ export default function RegisterCivilian() {
       if (!validate()) return;
       // Simulate API call
       await register(formData);
-      navigate("/dashboard");
+      navigate(ROUTES.DASHBOARD);
     } catch (error) {
       setErrors({ main: error });
     } finally {
