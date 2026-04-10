@@ -1,9 +1,11 @@
 import { useId, useState } from 'react'
 import { NAV_ITEMS } from '@/features/home/data/homeContent'
+import { useNavigate } from 'react-router-dom'
 
 export function Navbar({ onRegisterClick }) {
   const [open, setOpen] = useState(false)
   const menuId = useId()
+  const navigate = useNavigate()
 
   return (
     <nav
@@ -46,6 +48,7 @@ export function Navbar({ onRegisterClick }) {
           <button
             type="button"
             className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-on-accent shadow-lg shadow-accent/30 transition hover:scale-[1.02] hover:bg-accent-hover"
+            onClick={() => navigate('/login')}
           >
             Login
           </button>

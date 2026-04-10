@@ -1,11 +1,11 @@
-import { AppProviders } from '@/providers/AppProviders'
-import { AppRoutes } from '@/routes/AppRoutes'
-import './App.css'
+import { AppProviders } from "@/providers/AppProviders";
+import "./App.css";
+import AppRouter from "./routes/AppRouter";
 
 export default function App() {
   return (
     <AppProviders>
-      <AppRoutes />
+        <AppRouter />
     </AppProviders>
-  )
+  );
 }
