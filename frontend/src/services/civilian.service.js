@@ -1,0 +1,13 @@
+import axiosInstance from "./axiosInstance";
+
+const API_BASE_URL = "/api/civilian";
+
+export const civilianService = {
+  register: async (formData) => {
+    return await axiosInstance.post(`${API_BASE_URL}/register`, {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+  },
+};
