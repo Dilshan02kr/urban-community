@@ -1,4 +1,4 @@
-import { Earth, Home, List, User } from "lucide-react";
+import { Earth, Home, List, Mail, User } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
@@ -10,6 +10,7 @@ export default function SideBar() {
     { label: "Event Dashboard", path: ROUTES.ORGANIZATION_DASHBOARD, icon: <Home /> },
     { label: "My Events", path: ROUTES.ORGANIZATION_EVENTS, icon: <List /> },
     { label: "Explore Events", path: ROUTES.ORGANIZATION_EXPLORE_EVENTS, icon: <Earth /> },
+    { label: "Requests", path: ROUTES.ORGANIZATION_REQUESTS, icon: <Mail /> },
     { label: "Profile", path: ROUTES.ORGANIZATION_PROFILE, icon: <User /> },
   ];
   return (
