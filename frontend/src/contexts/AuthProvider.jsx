@@ -1,4 +1,5 @@
 import { authService } from "@/services/auth.service";
+import { getSessionValue, setSession } from "@/utils/session";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -8,7 +9,8 @@ export function AuthProvider({ children }) {
   const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = getSessionValue("accessToken");
+    console.log(accessToken)
     if (accessToken) setIsAuthenticated(true);
     setIsAuthReady(true);
   }, []);
@@ -26,9 +28,9 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const body = await authService.login(email, password);
-    if (body.statusCode === 200 && body.data?.accessToken) {
+    if (body.statusCode === 200 && body.data?.token) {
       setIsAuthenticated(true);
-      sessionStorage.setItem("accessToken", body.data.accessToken);
+      setSession("accessToken", body.data.token);
     }
     return body;
   };
@@ -36,6 +38,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("user");
   };
 
   return (

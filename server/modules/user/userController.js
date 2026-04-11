@@ -22,6 +22,7 @@ const login = async (req, res, next) => {
           .json({ success: false, message: "Invalid password" });
       }
       user = citizen;
+      user.role = "citizen";
     }
 
     //step 2: check if the user is an organization
@@ -37,6 +38,7 @@ const login = async (req, res, next) => {
           .json({ success: false, message: "Invalid password" });
       }
       user = organization;
+      user.role = "organization";
     }
 
     if (!user) {
@@ -49,13 +51,15 @@ const login = async (req, res, next) => {
     const token = generateToken({ id: user._id.toString() });
 
     const userResponse = user.toObject();
-    userResponse.token = token;
     delete userResponse.password;
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      data: userResponse,
+      data: {
+        token,
+        user: userResponse,
+      },
     });
   } catch (err) {
     next(err);

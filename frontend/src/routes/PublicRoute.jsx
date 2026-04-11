@@ -4,6 +4,9 @@ import { ROUTES } from "../constants/routes";
 
 export function PublicRoute() {
   const { isAuthenticated, isAuthReady } = useAuth();
+  console.log("isAuthenticated:", isAuthenticated);
+  console.log("isAuthReady:", isAuthReady);
+
 
   if (!isAuthReady) {
     return null;
