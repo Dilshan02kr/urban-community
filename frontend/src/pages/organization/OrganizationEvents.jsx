@@ -111,10 +111,10 @@ export default function OrganizationEvents() {
   );
 
   const inputStyle = {
-    background: "#0f1117",
-    border: "1px solid rgba(255,255,255,0.1)",
+    background: "#ffffff",
+    border: "1px solid #cbd5e1",
     padding: "11px 14px",
-    color: "#f1f5f9",
+    color: "#0f172a",
     borderRadius: "10px",
     fontSize: "14px",
     width: "100%",
@@ -128,12 +128,12 @@ export default function OrganizationEvents() {
   };
 
   const blurInput = (e) => {
-    e.target.style.borderColor = "rgba(255,255,255,0.1)";
+    e.target.style.borderColor = "#cbd5e1";
     e.target.style.boxShadow = "none";
   };
 
   return (
-    <div className="p-6 lg:p-10 min-h-screen" style={{ background: "#0f1117", color: "#f1f5f9" }}>
+    <div className="p-6 lg:p-10 min-h-screen" style={{ background: "#ffffff", color: "#0f172a" }}>
 
       {/* ── Edit Modal ── */}
       {editingEvent && (
@@ -154,8 +154,8 @@ export default function OrganizationEvents() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#1a1d27",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "#ffffff",
+              border: "1px solid #e2e8f0",
               borderRadius: "20px",
               padding: "2rem",
               width: "100%",
@@ -165,22 +165,22 @@ export default function OrganizationEvents() {
             {/* Modal header */}
             <div
               className="flex justify-between items-start mb-6 pb-5"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+              style={{ borderBottom: "1px solid #e2e8f0" }}
             >
               <div>
-                <h2 style={{ fontSize: "18px", fontWeight: 600, color: "#f1f5f9" }}>
+                <h2 style={{ fontSize: "18px", fontWeight: 600, color: "#0f172a" }}>
                   Edit Initiative
                 </h2>
-                <p style={{ fontSize: "13px", color: "#6b7280", marginTop: "3px" }}>
+                <p style={{ fontSize: "13px", color: "#475569", marginTop: "3px" }}>
                   Update the details for this event.
                 </p>
               </div>
               <button
                 onClick={closeEditModal}
                 style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  color: "#9ca3af",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  color: "#64748b",
                   borderRadius: "8px",
                   width: "32px",
                   height: "32px",
@@ -214,7 +214,7 @@ export default function OrganizationEvents() {
                   { label: "Organization", key: "organization", type: "text", placeholder: "Urban Care Team" },
                 ].map(({ label, key, type, placeholder }) => (
                   <div key={key} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#6b7280" }}>
+                    <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#475569" }}>
                       {label}
                     </label>
                     <input
@@ -232,7 +232,7 @@ export default function OrganizationEvents() {
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "1.5rem" }}>
-                <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#6b7280" }}>
+                <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#475569" }}>
                   Description
                 </label>
                 <textarea
@@ -271,21 +271,21 @@ export default function OrganizationEvents() {
                   onClick={closeEditModal}
                   style={{
                     padding: "11px 20px",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "#9ca3af",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
+                    color: "#475569",
                     borderRadius: "10px",
                     fontSize: "14px",
                     fontWeight: 600,
                     cursor: "pointer",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-                    e.currentTarget.style.color = "#f1f5f9";
+                    e.currentTarget.style.background = "#f8fafc";
+                    e.currentTarget.style.color = "#0f172a";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                    e.currentTarget.style.color = "#9ca3af";
+                    e.currentTarget.style.background = "#ffffff";
+                    e.currentTarget.style.color = "#475569";
                   }}
                 >
                   Cancel
@@ -299,13 +299,13 @@ export default function OrganizationEvents() {
       {/* ── Header ── */}
       <header
         className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+        style={{ borderBottom: "1px solid #e2e8f0" }}
       >
         <div>
-          <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#f1f5f9", letterSpacing: "-0.5px" }}>
+          <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#0f172a", letterSpacing: "-0.5px" }}>
             {view === "overview" ? "My Eco-Hub" : "Host a New Initiative"}
           </h1>
-          <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+          <p className="mt-1 text-sm" style={{ color: "#475569" }}>
             {view === "overview"
               ? "Manage and track your organization's contributions."
               : "Fill in the details to launch your next program."}
@@ -331,12 +331,12 @@ export default function OrganizationEvents() {
                 key={event._id}
                 className="relative rounded-2xl p-5 transition-all duration-200"
                 style={{
-                  background: "#1a1d27",
-                  border: "1px solid rgba(255,255,255,0.09)",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
                   overflow: "hidden",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(16,185,129,0.4)")}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
               >
                 {/* Accent bar */}
                 <div
@@ -367,20 +367,20 @@ export default function OrganizationEvents() {
                       style={{
                         width: "30px",
                         height: "30px",
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        color: "#6b7280",
+                        background: "#f8fafc",
+                        border: "1px solid #e2e8f0",
+                        color: "#64748b",
                         cursor: "pointer",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(99,102,241,0.1)";
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.3)";
-                        e.currentTarget.style.color = "#a5b4fc";
+                        e.currentTarget.style.background = "rgba(16,185,129,0.1)";
+                        e.currentTarget.style.borderColor = "rgba(16,185,129,0.35)";
+                        e.currentTarget.style.color = "#059669";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                        e.currentTarget.style.color = "#6b7280";
+                        e.currentTarget.style.background = "#f8fafc";
+                        e.currentTarget.style.borderColor = "#e2e8f0";
+                        e.currentTarget.style.color = "#64748b";
                       }}
                     >
                       <EditIcon />
@@ -394,9 +394,9 @@ export default function OrganizationEvents() {
                       style={{
                         width: "30px",
                         height: "30px",
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        color: "#6b7280",
+                        background: "#f8fafc",
+                        border: "1px solid #e2e8f0",
+                        color: "#64748b",
                         cursor: "pointer",
                       }}
                       onMouseEnter={(e) => {
@@ -405,9 +405,9 @@ export default function OrganizationEvents() {
                         e.currentTarget.style.color = "#f87171";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                        e.currentTarget.style.color = "#6b7280";
+                        e.currentTarget.style.background = "#f8fafc";
+                        e.currentTarget.style.borderColor = "#e2e8f0";
+                        e.currentTarget.style.color = "#64748b";
                       }}
                     >
                       <TrashIcon />
@@ -416,13 +416,13 @@ export default function OrganizationEvents() {
                 </div>
 
                 {/* Title & description */}
-                <h3 className="text-base font-semibold mb-2" style={{ color: "#f1f5f9", lineHeight: "1.4" }}>
+                <h3 className="text-base font-semibold mb-2" style={{ color: "#0f172a", lineHeight: "1.4" }}>
                   {event.title}
                 </h3>
                 <p
                   className="text-sm mb-5"
                   style={{
-                    color: "#64748b",
+                    color: "#475569",
                     lineHeight: "1.65",
                     display: "-webkit-box",
                     WebkitLineClamp: 3,
@@ -436,13 +436,13 @@ export default function OrganizationEvents() {
                 {/* Meta */}
                 <div
                   className="pt-4 flex flex-col gap-2"
-                  style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+                  style={{ borderTop: "1px solid #e2e8f0" }}
                 >
-                  <div className="flex items-center gap-2 text-xs" style={{ color: "#94a3b8" }}>
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "#64748b" }}>
                     <span style={{ fontSize: "12px" }}>📍</span>
                     {event.location}
                   </div>
-                  <div className="flex items-center gap-2 text-xs" style={{ color: "#94a3b8" }}>
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "#64748b" }}>
                     <span style={{ fontSize: "12px" }}>📅</span>
                     {new Date(event.date).toLocaleDateString(undefined, { dateStyle: "long" })}
                   </div>
@@ -452,9 +452,9 @@ export default function OrganizationEvents() {
           ) : (
             <div
               className="col-span-full py-20 text-center rounded-2xl"
-              style={{ border: "1.5px dashed rgba(255,255,255,0.07)" }}
+              style={{ border: "1.5px dashed #cbd5e1", background: "#f8fafc" }}
             >
-              <p className="text-base italic" style={{ color: "#4b5563" }}>
+              <p className="text-base italic" style={{ color: "#64748b" }}>
                 You haven't registered any community events yet.
               </p>
             </div>
@@ -466,7 +466,7 @@ export default function OrganizationEvents() {
       {view === "register" && (
         <div
           className="max-w-2xl mx-auto rounded-2xl p-8"
-          style={{ background: "#1a1d27", border: "1px solid rgba(255,255,255,0.09)" }}
+          style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -477,7 +477,7 @@ export default function OrganizationEvents() {
                 { label: "Organization", key: "organization", type: "text", placeholder: "Urban Care Team" },
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key} className="flex flex-col gap-2">
-                  <label className="text-xs font-bold uppercase" style={{ color: "#6b7280", letterSpacing: "0.8px" }}>
+                  <label className="text-xs font-bold uppercase" style={{ color: "#475569", letterSpacing: "0.8px" }}>
                     {label}
                   </label>
                   <input
@@ -496,7 +496,7 @@ export default function OrganizationEvents() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase" style={{ color: "#6b7280", letterSpacing: "0.8px" }}>
+              <label className="text-xs font-bold uppercase" style={{ color: "#475569", letterSpacing: "0.8px" }}>
                 Description
               </label>
               <textarea
@@ -527,18 +527,18 @@ export default function OrganizationEvents() {
                 onClick={() => setView("overview")}
                 className="px-6 py-3 rounded-xl text-sm font-semibold"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "#9ca3af",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  color: "#475569",
                   cursor: "pointer",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-                  e.currentTarget.style.color = "#f1f5f9";
+                  e.currentTarget.style.background = "#f8fafc";
+                  e.currentTarget.style.color = "#0f172a";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  e.currentTarget.style.color = "#9ca3af";
+                  e.currentTarget.style.background = "#ffffff";
+                  e.currentTarget.style.color = "#475569";
                 }}
               >
                 Cancel
