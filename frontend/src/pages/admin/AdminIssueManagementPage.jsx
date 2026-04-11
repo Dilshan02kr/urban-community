@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { message } from "antd";
 import { adminService } from "@/services/admin.service";
 import { ROUTES } from "@/constants/routes";
+import { IssueReportingOverview } from "@/components/issues/IssueReportingOverview";
 import {
   AlertTriangle,
   Loader2,
@@ -140,6 +141,8 @@ export default function AdminIssueManagementPage() {
           Review civic issues reported by citizens
         </p>
       </header>
+
+      <IssueReportingOverview />
 
       {/* Search + filters */}
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">

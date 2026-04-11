@@ -74,6 +74,13 @@ export const adminService = {
     });
   },
 
+  /** GET /api/issues/analytics/summary — counts by status & category */
+  getIssueAnalytics: async () => {
+    return await axiosInstance.get(`${ISSUES_URL}/analytics/summary`, {
+      headers: getAdminHeaders(),
+    });
+  },
+
   updateIssueStatus: async (issueId, status) => {
     return await axiosInstance.patch(
       `${ISSUES_URL}/${issueId}/status`,
