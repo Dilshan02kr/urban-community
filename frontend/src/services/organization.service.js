@@ -19,4 +19,12 @@ export const organizationService = {
   updateProfile: async (formData) => {
     return await axiosInstance.put(`${API_BASE_URL}/me`, formData);
   },
+  getRequests: async () => {
+    return await axiosInstance.get(`/api/member/requests`);
+  },
+  respondToRequest: async (requestId, status) => {
+    return await axiosInstance.put(`/api/member/response-request/${requestId}`, {
+      status,
+    });
+  },
 };

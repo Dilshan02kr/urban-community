@@ -1,6 +1,8 @@
 import { Spinner } from "@/components/common/Spinner";
 import { Input } from "@/components/ui";
+import { useAuth } from "@/contexts/AuthProvider";
 import { useOrganization } from "@/contexts/OrganizationProvider";
+import { message, Modal } from "antd";
 import { Building2, CircleCheck, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -14,11 +16,12 @@ const buildFormFromOrg = (data = {}) => ({
 
 export default function OrgProfile() {
   const { organization, getProfile, updateProfile } = useOrganization();
+  const { logout } = useAuth();
   const [form, setForm] = useState(buildFormFromOrg());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState(null);
+  const { confirm } = Modal;
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -27,7 +30,8 @@ export default function OrgProfile() {
         await getProfile();
       } catch (fetchError) {
         console.error("Failed to fetch organization profile:", fetchError);
-        setError(fetchError || "Failed to fetch profile");
+        message.error(fetchError || "Failed to fetch profile");
+        setError(fetchError);
       } finally {
         setLoading(false);
       }
@@ -55,17 +59,14 @@ export default function OrgProfile() {
   const onReset = () => {
     if (!organization) return;
     setForm(buildFormFromOrg(organization));
-    setError("");
-    setSuccess("Changes discarded.");
+    message.info("Changes discarded.");
   };
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (!form.name.trim()) {
-      setError("Organization name is required.");
+      message.warning("Organization name is required.");
       return;
     }
 
@@ -79,13 +80,29 @@ export default function OrgProfile() {
     try {
       setSaving(true);
       await updateProfile(payload);
-      setSuccess("Organization profile saved successfully.");
+      message.success("Organization profile updated");
     } catch (saveError) {
       console.error("Failed to update organization profile:", saveError);
-      setError(saveError || "Failed to update profile");
+      message.error(saveError || "Failed to update profile");
+      setError(saveError);
     } finally {
       setSaving(false);
     }
+  };
+
+  const onLogout = () => {
+    confirm({
+      title: "Confirm Logout",
+      content: "Are you sure you want to logout?",
+      onOk: async () => {
+        try {
+          await logout();
+        } catch (logoutError) {
+          console.error("Failed to logout:", logoutError);
+          message.error(logoutError?.message || "Failed to logout");
+        }
+      },
+    });
   };
 
   if (loading) {
@@ -107,11 +124,27 @@ export default function OrgProfile() {
             Keep your profile updated so citizens can trust and reach your team.
           </p>
         </div>
-        <span className="inline-flex items-center gap-2 self-start rounded-full bg-emerald-50 px-4 py-2 text-xs font-semibold tracking-wide text-emerald-700 ring-1 ring-emerald-100 sm:self-auto">
-          <CircleCheck className="h-4 w-4" />
-          Organization Account
-        </span>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-xs font-semibold tracking-wide text-emerald-700 ring-1 ring-emerald-100">
+            <CircleCheck className="h-4 w-4" />
+            Organization Account
+          </span>
+          <button
+            type="button"
+            onClick={onLogout}
+            className="rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold tracking-wide text-rose-700 transition hover:bg-rose-100"
+          >
+            Logout
+          </button>
+        </div>
       </header>
+
+      {/* main error message */}
+      {error && (
+        <div className="mx-auto max-w-4xl">
+          <p>{error || "An unknown error occurred."}</p>
+        </div>
+      )}
 
       <form
         onSubmit={onSubmit}
@@ -181,21 +214,6 @@ export default function OrgProfile() {
             </label>
           </div>
         </div>
-
-        {(error || success) && (
-          <div className="border-t border-slate-200/80 px-6 py-4 sm:px-8">
-            {error ? (
-              <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700">
-                {error}
-              </p>
-            ) : null}
-            {success ? (
-              <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
-                {success}
-              </p>
-            ) : null}
-          </div>
-        )}
 
         <div className="flex flex-col-reverse gap-3 border-t border-slate-200/80 bg-slate-50/70 px-6 py-5 sm:flex-row sm:justify-end sm:px-8">
           <button

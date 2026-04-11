@@ -89,9 +89,9 @@ const errorHandler = async (error) => {
 
       // Clear preferences FIRST before redirecting
       try {
-        // await removeSession("accessToken");
-        // await removeSession("user");
-        // await removeSession("userProfile");
+        await removeSession("accessToken");
+        await removeSession("user");
+        await removeSession("userProfile");
         console.log("✅ Preferences cleared successfully");
       } catch (clearError) {
         console.error("❌ Error clearing preferences:", clearError);

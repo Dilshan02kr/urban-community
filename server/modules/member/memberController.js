@@ -3,6 +3,7 @@ const Event = require("../events/eventModel");
 const Member = require("./memberModel");
 const Citizen = require("../citizen/citizenModel");
 const { MEMBER_STATUS } = require("../../config/constant");
+const Organization = require("../organization/organizationModel");
 
 const sendRequest = async (req, res, next) => {
   try {
@@ -319,10 +320,113 @@ const deleteMember = async (req, res, next) => {
   }
 };
 
+const getMyRequests = async (req, res, next) => {
+  try {
+    const organizationId = req.user.id;
+
+    // step 1: validate organization account
+    const organization = await Organization.findById(organizationId);
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    // step 2: collect events created by this organization
+    const events = await Event.find({
+      orgId: new mongoose.Types.ObjectId(organizationId),
+    })
+      .select("_id")
+      .lean();
+
+    const eventIds = events.map((event) => event._id);
+
+    if (eventIds.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No requests found for your events",
+        data: [],
+      });
+    }
+
+    // step 3: retrieve requests sent to those events
+    const requests = await Member.aggregate([
+      {
+        $match: {
+          eventId: { $in: eventIds },
+        },
+      },
+      {
+        $lookup: {
+          from: "citizens",
+          localField: "userId",
+          foreignField: "_id",
+          as: "citizenDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$citizenDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "eventId",
+          foreignField: "_id",
+          as: "eventDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$eventDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          eventId: 1,
+          status: 1,
+          createdAt: 1,
+          citizenDetails: {
+            _id: "$citizenDetails._id",
+            name: "$citizenDetails.name",
+            email: "$citizenDetails.email",
+          },
+          eventDetails: {
+            _id: "$eventDetails._id",
+            title: "$eventDetails.title",
+            date: "$eventDetails.date",
+            location: "$eventDetails.location",
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Requests fetched successfully",
+      data: requests,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   sendRequest,
   getRequests,
   responseRequest,
   getMembers,
   deleteMember,
+  getMyRequests,
 };

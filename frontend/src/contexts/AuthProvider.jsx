@@ -1,8 +1,7 @@
 import { ROUTES } from "@/constants/routes";
 import { authService } from "@/services/auth.service";
-import { getSessionValue, setSession } from "@/utils/session";
+import { getSessionValue, removeSession, setSession } from "@/utils/session";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -36,9 +35,9 @@ export function AuthProvider({ children }) {
         setSession("accessToken", data.token);
         setSession("user", JSON.stringify(data.user));
         if (data.user.role === "citizen") {
-          Navigate(ROUTES.DASHBOARD);
+          window.location.replace(ROUTES.DASHBOARD);
         } else if (data.user.role === "organization") {
-          Navigate(ROUTES.ORGANIZATION_DASHBOARD);
+          window.location.replace(ROUTES.ORGANIZATION_DASHBOARD);
         }
       }
       return data;
@@ -49,9 +48,8 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("user");
-    Navigate(ROUTES.LOGIN);
+    removeSession();
+    window.location.replace(ROUTES.LOGIN);
   };
 
   return (
