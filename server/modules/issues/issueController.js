@@ -272,7 +272,7 @@ exports.getIssuesByUser = async (req, res) => {
   }
 };
 
-/** Issues for the authenticated citizen (JWT) — same source of truth as getIssueById */
+/** Issues for the authenticated citizen (JWT) — paginated; supports status, category, search */
 exports.getIssuesForCurrentUser = async (req, res) => {
   try {
     const authId = resolveAuthUserId(req);
@@ -283,13 +283,40 @@ exports.getIssuesForCurrentUser = async (req, res) => {
       });
     }
 
-    const issues = await Issue.find({ citizen: authId }).sort({
-      createdAt: -1,
-    });
+    const { page = 1, status, category, search } = req.query;
+
+    const filter = { citizen: authId };
+
+    if (status) filter.status = status;
+    if (category) filter.category = category;
+
+    const searchTrim = search != null && String(search).trim();
+    if (searchTrim) {
+      const rx = new RegExp(escapeRegex(searchTrim), "i");
+      filter.$or = [
+        { title: rx },
+        { description: rx },
+        { location: rx },
+      ];
+    }
+
+    const pageNumber = Math.max(1, parseInt(page, 10) || 1);
+    /** Fixed page size for civilian “my issues” list (not configurable). */
+    const limitNumber = 5;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const [issues, total] = await Promise.all([
+      Issue.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limitNumber),
+      Issue.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.max(1, Math.ceil(total / limitNumber) || 1);
 
     return res.status(200).json({
       success: true,
-      total: issues.length,
+      total,
+      page: pageNumber,
+      totalPages,
       data: issues,
     });
   } catch (error) {
@@ -406,9 +433,9 @@ exports.deleteIssue = async (req, res) => {
       });
     }
 
-    const deleted = await Issue.findOneAndDelete({ _id: id, citizen: authId });
+    const issueDoc = await Issue.findOne({ _id: id, citizen: authId });
 
-    if (!deleted) {
+    if (!issueDoc) {
       const exists = await Issue.exists({ _id: id });
       if (!exists) {
         return res.status(404).json({
@@ -421,6 +448,15 @@ exports.deleteIssue = async (req, res) => {
         message: "You can only delete issues you reported",
       });
     }
+
+    if (issueDoc.status !== "Pending") {
+      return res.status(403).json({
+        success: false,
+        message: "Only pending issues can be deleted.",
+      });
+    }
+
+    await Issue.deleteOne({ _id: id });
 
     return res.status(200).json({
       success: true,

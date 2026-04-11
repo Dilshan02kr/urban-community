@@ -26,10 +26,19 @@ export const issueService = {
     });
   },
 
-  /** Same citizen as JWT — avoids mismatch with sessionStorage user id */
-  getMyIssues: async () => {
+  /**
+   * My issues — GET /api/issues/me
+   * @param {{ page?: number, limit?: number, status?: string, category?: string, search?: string }} params
+   */
+  getMyIssues: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== null && v !== "",
+      ),
+    );
     return await axiosInstance.get(`${API_BASE_URL}/me`, {
       headers: getAuthHeaders(),
+      params: clean,
     });
   },
 

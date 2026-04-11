@@ -17,6 +17,8 @@ import {
   Lightbulb,
   ListChecks,
   ChevronRight,
+  Search,
+  ChevronLeft,
 } from "lucide-react";
 
 /** Must match server/modules/issues/issue.validation.js (lowercase) */
@@ -61,6 +63,8 @@ const STATUS_CONFIG = {
   },
 };
 
+const MY_ISSUES_PAGE_SIZE = 5;
+
 const initialFormState = {
   title: "",
   description: "",
@@ -76,6 +80,14 @@ export default function IssueReportingPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [issues, setIssues] = useState([]);
+  const [issuesTotal, setIssuesTotal] = useState(0);
+  const [issuesPage, setIssuesPage] = useState(1);
+  const [issuesTotalPages, setIssuesTotalPages] = useState(1);
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [myReportsRefreshKey, setMyReportsRefreshKey] = useState(0);
   const [loadingIssues, setLoadingIssues] = useState(true);
   const [activeTab, setActiveTab] = useState("report");
 
@@ -86,21 +98,62 @@ export default function IssueReportingPage() {
     }
   }, [location.state, navigate]);
 
-  const fetchMyIssues = async () => {
-    setLoadingIssues(true);
-    try {
-      const res = await issueService.getMyIssues();
-      setIssues(res.data?.data || []);
-    } catch (err) {
-      console.error("Failed to load issues:", err);
-    } finally {
-      setLoadingIssues(false);
-    }
-  };
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   useEffect(() => {
-    fetchMyIssues();
-  }, []);
+    setIssuesPage(1);
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      setLoadingIssues(true);
+      try {
+        const res = await issueService.getMyIssues({
+          page: issuesPage,
+          limit: MY_ISSUES_PAGE_SIZE,
+          status: filterStatus || undefined,
+          category: filterCategory || undefined,
+          search: debouncedSearch || undefined,
+        });
+        if (cancelled) return;
+        const body = res.data || {};
+        const list = body.data || [];
+        const total = body.total ?? 0;
+        const tp = Math.max(1, body.totalPages ?? 1);
+        setIssues(list);
+        setIssuesTotal(total);
+        setIssuesTotalPages(tp);
+        if (issuesPage > tp) {
+          setIssuesPage(tp);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to load issues:", err);
+          setIssues([]);
+          setIssuesTotal(0);
+          setIssuesTotalPages(1);
+        }
+      } finally {
+        if (!cancelled) setLoadingIssues(false);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    issuesPage,
+    filterStatus,
+    filterCategory,
+    debouncedSearch,
+    myReportsRefreshKey,
+  ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -164,8 +217,9 @@ export default function IssueReportingPage() {
       message.success("Issue reported successfully.");
       setForm(initialFormState);
       clearImage();
+      setIssuesPage(1);
       setActiveTab("my-reports");
-      fetchMyIssues();
+      setMyReportsRefreshKey((k) => k + 1);
     } catch (err) {
       const errMsg =
         err.response?.data?.message || "Could not submit your report.";
@@ -333,7 +387,7 @@ export default function IssueReportingPage() {
           >
             <Icon size={16} />
             {label}
-            {key === "my-reports" && issues.length > 0 && (
+            {key === "my-reports" && issuesTotal > 0 && (
               <span
                 style={{
                   background: activeTab === key ? accent : "#94a3b8",
@@ -346,7 +400,7 @@ export default function IssueReportingPage() {
                   textAlign: "center",
                 }}
               >
-                {issues.length}
+                {issuesTotal}
               </span>
             )}
           </button>
@@ -685,6 +739,112 @@ export default function IssueReportingPage() {
 
       {activeTab === "my-reports" && (
         <div>
+          <div
+            style={{
+              marginBottom: 18,
+              padding: 18,
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.92)",
+              border: "1px solid rgba(226, 232, 240, 0.9)",
+              boxShadow: "0 4px 16px rgba(148, 163, 184, 0.08)",
+            }}
+          >
+            <div style={{ position: "relative", marginBottom: 14 }}>
+              <Search
+                size={18}
+                color="#94a3b8"
+                style={{
+                  position: "absolute",
+                  left: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                }}
+              />
+              <input
+                type="search"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search title, description, or location…"
+                aria-label="Search my reports"
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "11px 14px 11px 40px",
+                  borderRadius: 12,
+                  border: "1.5px solid #e2e8f0",
+                  fontSize: 14,
+                  color: "#1e293b",
+                  background: "#f8fafc",
+                  outline: "none",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = accent)}
+                onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <select
+                value={filterStatus}
+                onChange={(e) => {
+                  setFilterStatus(e.target.value);
+                  setIssuesPage(1);
+                }}
+                aria-label="Filter by status"
+                style={{
+                  padding: "9px 12px",
+                  borderRadius: 10,
+                  border: "1.5px solid #e2e8f0",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#475569",
+                  background: "#fff",
+                  cursor: "pointer",
+                  minWidth: 140,
+                }}
+              >
+                <option value="">All statuses</option>
+                {Object.entries(STATUS_CONFIG).map(([value, cfg]) => (
+                  <option key={value} value={value}>
+                    {cfg.label}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={filterCategory}
+                onChange={(e) => {
+                  setFilterCategory(e.target.value);
+                  setIssuesPage(1);
+                }}
+                aria-label="Filter by category"
+                style={{
+                  padding: "9px 12px",
+                  borderRadius: 10,
+                  border: "1.5px solid #e2e8f0",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#475569",
+                  background: "#fff",
+                  cursor: "pointer",
+                  minWidth: 160,
+                }}
+              >
+                <option value="">All categories</option>
+                {ISSUE_CATEGORIES.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {loadingIssues ? (
             <div
               style={{
@@ -732,14 +892,37 @@ export default function IssueReportingPage() {
                   fontWeight: 600,
                 }}
               >
-                No reports yet
+                {!filterStatus &&
+                !filterCategory &&
+                !debouncedSearch
+                  ? "No reports yet"
+                  : "No matching reports"}
               </p>
               <p style={{ marginTop: 4, color: "#94a3b8", fontSize: 13 }}>
-                Use the Report issue tab to submit your first civic issue.
+                {!filterStatus &&
+                !filterCategory &&
+                !debouncedSearch
+                  ? "Use the Report issue tab to submit your first civic issue."
+                  : "Try different search terms or filters."}
               </p>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 13,
+                  color: "#64748b",
+                  fontWeight: 500,
+                }}
+              >
+                {issuesTotal === 0
+                  ? "No reports"
+                  : `Showing ${(issuesPage - 1) * MY_ISSUES_PAGE_SIZE + 1}–${Math.min(
+                      issuesPage * MY_ISSUES_PAGE_SIZE,
+                      issuesTotal,
+                    )} of ${issuesTotal}`}
+              </p>
               {issues.map((issue) => {
                 const catLabel =
                   ISSUE_CATEGORIES.find((c) => c.value === issue.category)
@@ -898,6 +1081,81 @@ export default function IssueReportingPage() {
                   </Link>
                 );
               })}
+              {issuesTotal > 0 && (
+                <nav
+                  aria-label="Pagination"
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    marginTop: 8,
+                    paddingTop: 18,
+                    borderTop: "1px solid #e2e8f0",
+                  }}
+                >
+                  <span style={{ fontSize: 13, color: "#64748b" }}>
+                    Page {issuesPage} of {issuesTotalPages}
+                  </span>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      type="button"
+                      disabled={issuesPage <= 1}
+                      onClick={() =>
+                        setIssuesPage((p) => Math.max(1, p - 1))
+                      }
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "8px 14px",
+                        borderRadius: 10,
+                        border: "1.5px solid #e2e8f0",
+                        background: "#fff",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#475569",
+                        cursor: issuesPage <= 1 ? "not-allowed" : "pointer",
+                        opacity: issuesPage <= 1 ? 0.45 : 1,
+                      }}
+                    >
+                      <ChevronLeft size={16} />
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      disabled={issuesPage >= issuesTotalPages}
+                      onClick={() =>
+                        setIssuesPage((p) =>
+                          p < issuesTotalPages ? p + 1 : p,
+                        )
+                      }
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "8px 14px",
+                        borderRadius: 10,
+                        border: "1.5px solid #e2e8f0",
+                        background: "#fff",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#475569",
+                        cursor:
+                          issuesPage >= issuesTotalPages
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          issuesPage >= issuesTotalPages ? 0.45 : 1,
+                      }}
+                    >
+                      Next
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </nav>
+              )}
             </div>
           )}
         </div>

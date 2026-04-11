@@ -99,6 +99,7 @@ export default function CivilianIssueDetailPage() {
   }, [issueId]);
 
   const confirmDelete = () => {
+    if (issue?.status !== "Pending") return;
     Modal.confirm({
       title: "Delete this report?",
       content:
@@ -224,35 +225,37 @@ export default function CivilianIssueDetailPage() {
           Back
         </button>
 
-        <button
-          type="button"
-          disabled={deleting}
-          onClick={confirmDelete}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "10px 18px",
-            borderRadius: 12,
-            border: "1px solid rgba(239, 68, 68, 0.35)",
-            background: "rgba(254, 242, 242, 0.95)",
-            fontSize: 14,
-            fontWeight: 600,
-            color: "#b91c1c",
-            cursor: deleting ? "not-allowed" : "pointer",
-            opacity: deleting ? 0.7 : 1,
-          }}
-        >
-          {deleting ? (
-            <Loader2
-              size={18}
-              style={{ animation: "spin 1s linear infinite" }}
-            />
-          ) : (
-            <Trash2 size={18} />
-          )}
-          Delete issue
-        </button>
+        {issue.status === "Pending" && (
+          <button
+            type="button"
+            disabled={deleting}
+            onClick={confirmDelete}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 18px",
+              borderRadius: 12,
+              border: "1px solid rgba(239, 68, 68, 0.35)",
+              background: "rgba(254, 242, 242, 0.95)",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#b91c1c",
+              cursor: deleting ? "not-allowed" : "pointer",
+              opacity: deleting ? 0.7 : 1,
+            }}
+          >
+            {deleting ? (
+              <Loader2
+                size={18}
+                style={{ animation: "spin 1s linear infinite" }}
+              />
+            ) : (
+              <Trash2 size={18} />
+            )}
+            Delete issue
+          </button>
+        )}
       </div>
 
       <header style={{ marginBottom: 24 }}>
