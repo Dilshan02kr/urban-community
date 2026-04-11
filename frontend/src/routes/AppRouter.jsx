@@ -16,6 +16,7 @@ import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePag
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
 import CivilianProfile from "@/pages/civilian/CivilianProfile";
 import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
+import IssueReportingPage from "@/pages/civilian/IssueReportingPage";
 import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
 import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -110,12 +111,7 @@ const router = createBrowserRouter([
           },
           {
             path: "issue-reporting",
-            element: (
-              <CivilianDashboardSubPage
-                title="Issue Reporting"
-                description="Report civic issues and track responses from your area."
-              />
-            ),
+            element: <IssueReportingPage />,
           },
           {
             path: "garbage-collectors",
