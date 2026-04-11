@@ -12,6 +12,13 @@ import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
 import CivilianProfile from "@/pages/civilian/CivilianProfile";
+import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
+import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
+import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
+import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
+import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
 
 const router = createBrowserRouter([
   {
@@ -69,12 +76,11 @@ const router = createBrowserRouter([
       },
       {
         path: "garbage-collectors",
-        element: (
-          <CivilianDashboardSubPage
-            title="Garbage collectors"
-            description="Schedules, contacts, and waste collection information."
-          />
-        ),
+        element: <GarbagePickupRequestPage />,
+      },
+      {
+        path: "recycling-centers",
+        element: <RecyclingCentersPage />,
       },
       {
         path: "about",
@@ -88,6 +94,30 @@ const router = createBrowserRouter([
       {
         path: ROUTES.CIVILIAN_PROFILE,
         element: <CivilianProfile />,
+
+    ],
+  },
+  // Admin login (standalone page)
+  {
+    path: ROUTES.ADMIN_LOGIN,
+    element: <AdminLoginPage />,
+  },
+  // Admin dashboard
+  {
+    path: ROUTES.ADMIN_DASHBOARD,
+    element: <AdminDashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardHomePage />,
+      },
+      {
+        path: "recycling-centers",
+        element: <AdminRecyclingCentersPage />,
+      },
+      {
+        path: "pickup-requests",
+        element: <AdminPickupRequestsPage />,
       },
     ],
   },
