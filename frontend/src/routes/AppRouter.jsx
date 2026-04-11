@@ -1,7 +1,4 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
 import { MainLayout } from "@/layouts/MainLayout";
 import { HomePage } from "@/pages/HomePage";
@@ -14,6 +11,7 @@ import RegisterOrganization from "@/pages/RegisterOrganization";
 import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
+import CivilianProfile from "@/pages/civilian/CivilianProfile";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +20,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.LOGIN,
         element: <LoginPage />,
+      },
+      {
+        path: ROUTES.REGISTER_CIVILIAN,
+        element: <RegisterCivilian />,
+      },
+      {
+        path: ROUTES.REGISTER_ORGANIZATION,
+        element: <RegisterOrganization />,
       },
     ],
   },
@@ -34,14 +40,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: ROUTES.REGISTER_CIVILIAN,
-    element: <RegisterCivilian />,
-  },
-  {
-    path: ROUTES.REGISTER_ORGANIZATION,
-    element: <RegisterOrganization />,
-  },
+
   {
     path: ROUTES.DASHBOARD,
     element: <CivilianDashboardLayout />,
@@ -85,6 +84,10 @@ const router = createBrowserRouter([
             description="Urban Community — connect, report, and improve your city."
           />
         ),
+      },
+      {
+        path: ROUTES.CIVILIAN_PROFILE,
+        element: <CivilianProfile />,
       },
     ],
   },

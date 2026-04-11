@@ -8,4 +8,6 @@ export const ROUTES = {
   DASHBOARD_ABOUT: '/dashboard/about',
   REGISTER_CIVILIAN: '/register/civilian',
   REGISTER_ORGANIZATION: '/register/organization',
+  CIVILIAN_PROFILE: '/dashboard/profile',
+  ORGANIZATION_PROFILE: '/organization/profile'
 }
