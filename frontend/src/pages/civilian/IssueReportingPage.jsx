@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { issueService } from "@/services/issue.service";
-import { getSessionValue } from "@/utils/session";
+import { ROUTES } from "@/constants/routes";
 import {
   AlertTriangle,
   MapPin,
@@ -15,6 +16,7 @@ import {
   Loader,
   Lightbulb,
   ListChecks,
+  ChevronRight,
 } from "lucide-react";
 
 /** Must match server/modules/issues/issue.validation.js (lowercase) */
@@ -66,18 +68,9 @@ const initialFormState = {
   location: "",
 };
 
-function getCitizenId() {
-  try {
-    const raw = getSessionValue("user");
-    if (!raw) return null;
-    const u = JSON.parse(raw);
-    return u._id || u.id || null;
-  } catch {
-    return null;
-  }
-}
-
 export default function IssueReportingPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [form, setForm] = useState(initialFormState);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -86,15 +79,17 @@ export default function IssueReportingPage() {
   const [loadingIssues, setLoadingIssues] = useState(true);
   const [activeTab, setActiveTab] = useState("report");
 
-  const fetchMyIssues = async () => {
-    const userId = getCitizenId();
-    if (!userId) {
-      setLoadingIssues(false);
-      return;
+  useEffect(() => {
+    if (location.state?.issueTab === "my-reports") {
+      setActiveTab("my-reports");
+      navigate(".", { replace: true, state: {} });
     }
+  }, [location.state, navigate]);
+
+  const fetchMyIssues = async () => {
     setLoadingIssues(true);
     try {
-      const res = await issueService.getIssuesByUser(userId);
+      const res = await issueService.getMyIssues();
       setIssues(res.data?.data || []);
     } catch (err) {
       console.error("Failed to load issues:", err);
@@ -754,15 +749,26 @@ export default function IssueReportingPage() {
                 const StatusIcon = statusInfo.icon;
 
                 return (
-                  <article
+                  <Link
                     key={issue._id}
+                    to={ROUTES.civilianIssueDetail(issue._id)}
+                    style={{
+                      textDecoration: "none",
+                      color: "inherit",
+                      display: "block",
+                    }}
+                  >
+                  <article
                     style={{
                       borderRadius: 16,
                       border: "1px solid rgba(226, 232, 240, 0.9)",
                       background: "rgba(255,255,255,0.92)",
                       boxShadow: "0 4px 16px rgba(148, 163, 184, 0.1)",
                       padding: "20px 24px",
+                      cursor: "pointer",
+                      transition: "box-shadow 0.2s ease, border-color 0.2s ease",
                     }}
+                    className="issue-report-card"
                   >
                     <div
                       style={{
@@ -873,7 +879,23 @@ export default function IssueReportingPage() {
                         {issue.adminResponse}
                       </div>
                     )}
+                    <div
+                      style={{
+                        marginTop: 14,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        gap: 4,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: accent,
+                      }}
+                    >
+                      View full details
+                      <ChevronRight size={16} />
+                    </div>
                   </article>
+                  </Link>
                 );
               })}
             </div>
@@ -885,6 +907,10 @@ export default function IssueReportingPage() {
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        .issue-report-card:hover {
+          box-shadow: 0 8px 24px rgba(148, 163, 184, 0.2);
+          border-color: rgba(249, 115, 22, 0.35);
         }
       `}</style>
     </div>

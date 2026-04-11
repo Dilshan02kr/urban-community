@@ -4,6 +4,8 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   DASHBOARD_EVENTS: '/dashboard/events',
   DASHBOARD_ISSUE_REPORTING: '/dashboard/issue-reporting',
+  /** @param {string} issueId */
+  civilianIssueDetail: (issueId) => `/dashboard/issue-reporting/${issueId}`,
   DASHBOARD_GARBAGE_COLLECTORS: '/dashboard/garbage-collectors',
   DASHBOARD_ABOUT: '/dashboard/about',
   DASHBOARD_RECYCLING_CENTERS: '/dashboard/recycling-centers',

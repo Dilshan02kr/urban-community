@@ -17,6 +17,7 @@ import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage"
 import CivilianProfile from "@/pages/civilian/CivilianProfile";
 import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
 import IssueReportingPage from "@/pages/civilian/IssueReportingPage";
+import CivilianIssueDetailPage from "@/pages/civilian/CivilianIssueDetailPage";
 import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
 import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
                 description="Eco programs, clean-up drives, and community happenings."
               />
             ),
+          },
+          {
+            path: "issue-reporting/:issueId",
+            element: <CivilianIssueDetailPage />,
           },
           {
             path: "issue-reporting",

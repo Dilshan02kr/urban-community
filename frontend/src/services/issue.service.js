@@ -26,8 +26,27 @@ export const issueService = {
     });
   },
 
+  /** Same citizen as JWT — avoids mismatch with sessionStorage user id */
+  getMyIssues: async () => {
+    return await axiosInstance.get(`${API_BASE_URL}/me`, {
+      headers: getAuthHeaders(),
+    });
+  },
+
   getIssuesByUser: async (userId) => {
     return await axiosInstance.get(`${API_BASE_URL}/user/${userId}`, {
+      headers: getAuthHeaders(),
+    });
+  },
+
+  getIssueById: async (issueId) => {
+    return await axiosInstance.get(`${API_BASE_URL}/${issueId}`, {
+      headers: getAuthHeaders(),
+    });
+  },
+
+  deleteIssue: async (issueId) => {
+    return await axiosInstance.delete(`${API_BASE_URL}/${issueId}`, {
       headers: getAuthHeaders(),
     });
   },
