@@ -6,6 +6,7 @@ const { createEventSchema, updateEventSchema } = require("./events.validation");
 const auth = require("../../middlewares/userAuth");
 
 const router = express.Router();
+router.get("/my-events", auth, eventController.getMyEvents);
 
 //read
 router.get("/", auth, eventController.getAllEvents);
