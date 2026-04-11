@@ -21,6 +21,8 @@ export const ROUTES = {
   ADMIN_RECYCLING_CENTERS: '/admin/recycling-centers',
   ADMIN_PICKUP_REQUESTS: '/admin/pickup-requests',
   ADMIN_ISSUE_MANAGEMENT: '/admin/issues',
+  /** @param {string} issueId */
+  adminIssueDetail: (issueId) => `/admin/issues/${issueId}`,
   ORGANIZATION_LAYOUT: '/organization',
   ORGANIZATION_DASHBOARD: '/organization/dashboard',
   ORGANIZATION_EVENTS: '/organization/events',

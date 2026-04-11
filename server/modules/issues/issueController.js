@@ -115,14 +115,29 @@ exports.getIssueAnalytics = async (req, res) => {
   }
 };
 
+/** Escape user input for safe use inside RegExp */
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 exports.getAllIssues = async (req, res) => {
   try {
-    const { page = 1, limit = 10, status, category } = req.query;
+    const { page = 1, limit = 10, status, category, search } = req.query;
 
     const filter = {};
 
     if (status) filter.status = status;
     if (category) filter.category = category;
+
+    const searchTrim = search != null && String(search).trim();
+    if (searchTrim) {
+      const rx = new RegExp(escapeRegex(searchTrim), "i");
+      filter.$or = [
+        { title: rx },
+        { description: rx },
+        { location: rx },
+      ];
+    }
 
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
@@ -195,6 +210,40 @@ exports.getIssueById = async (req, res) => {
     });
   } catch (error) {
     console.error("getIssueById:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
+  }
+};
+
+/** Single issue for admin dashboard (no citizen ownership check) */
+exports.getIssueByIdForAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid issue ID",
+      });
+    }
+
+    const issue = await Issue.findById(id).populate("citizen", "name email");
+
+    if (!issue) {
+      return res.status(404).json({
+        success: false,
+        message: "Issue not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: issue,
+    });
+  } catch (error) {
+    console.error("getIssueByIdForAdmin:", error);
     return res.status(500).json({
       success: false,
       message: error.message || "Server error",

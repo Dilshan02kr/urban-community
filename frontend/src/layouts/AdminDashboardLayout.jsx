@@ -104,8 +104,8 @@ export default function AdminDashboardLayout() {
       <aside
         id={menuId}
         className={[
-          "relative z-50 flex max-w-[85vw] shrink-0 flex-col border-r border-white/5 bg-slate-900/95 backdrop-blur-xl transition-[width,transform] duration-200 ease-out",
-          "fixed inset-y-0 left-0 lg:static lg:max-w-none lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex h-screen max-h-screen flex-col overflow-hidden border-r border-white/5 bg-slate-900/95 backdrop-blur-xl transition-[width,transform] duration-200 ease-out",
+          "max-w-[85vw] lg:max-w-none",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           collapsed ? "w-[4.5rem]" : "w-64",
         ].join(" ")}
@@ -142,7 +142,7 @@ export default function AdminDashboardLayout() {
         </div>
 
         <nav
-          className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4"
+          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden px-3 py-4"
           aria-label="Admin sections"
         >
           {ADMIN_NAV.map((item) => (
@@ -200,7 +200,12 @@ export default function AdminDashboardLayout() {
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div
+        className={[
+          "flex min-w-0 flex-1 flex-col transition-[margin] duration-200 ease-out",
+          collapsed ? "lg:ml-[4.5rem]" : "lg:ml-64",
+        ].join(" ")}
+      >
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-white/5 bg-slate-900/80 px-4 py-3 backdrop-blur-xl lg:hidden">
           <button
             type="button"

@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   Navigate,
+  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
@@ -25,6 +26,8 @@ import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
 import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
 import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
 import AdminSectionPlaceholderPage from "@/pages/admin/AdminSectionPlaceholderPage";
+import AdminIssueManagementPage from "@/pages/admin/AdminIssueManagementPage";
+import AdminIssueDetailPage from "@/pages/admin/AdminIssueDetailPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
@@ -187,12 +190,17 @@ const router = createBrowserRouter([
       },
       {
         path: "issues",
-        element: (
-          <AdminSectionPlaceholderPage
-            title="Issue Management"
-            description="Review and respond to civic issues reported by civilians. Admin workflows for issues will be added here."
-          />
-        ),
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <AdminIssueManagementPage />,
+          },
+          {
+            path: ":issueId",
+            element: <AdminIssueDetailPage />,
+          },
+        ],
       },
     ],
   },

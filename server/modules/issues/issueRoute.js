@@ -26,6 +26,8 @@ router.get("/analytics/summary", adminAuth, issueController.getIssueAnalytics);
 
 router.get("/me", userAuth, issueController.getIssuesForCurrentUser);
 
+router.get("/admin/:id", adminAuth, issueController.getIssueByIdForAdmin);
+
 router.get("/:id", userAuth, issueController.getIssueById);
 
 router.get("/user/:userId", userAuth, issueController.getIssuesByUser);

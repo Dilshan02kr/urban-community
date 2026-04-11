@@ -3,6 +3,7 @@ import { getSessionValue } from "@/utils/session";
 
 const ADMIN_URL = "/api/admin";
 const RECYCLING_URL = "/api/recycling";
+const ISSUES_URL = "/api/issues";
 
 const getAdminHeaders = () => ({
   Authorization: `Bearer ${getSessionValue("accessToken")}`,
@@ -55,5 +56,36 @@ export const adminService = {
   // Recycling Centers (public read)
   getAllCenters: async () => {
     return await axiosInstance.get(`${RECYCLING_URL}/centers`);
+  },
+
+  /**
+   * Civic issues (admin) — GET /api/issues
+   * @param {{ page?: number, limit?: number, status?: string, category?: string, search?: string }} params
+   */
+  getIssues: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== null && v !== "",
+      ),
+    );
+    return await axiosInstance.get(ISSUES_URL, {
+      headers: getAdminHeaders(),
+      params: clean,
+    });
+  },
+
+  updateIssueStatus: async (issueId, status) => {
+    return await axiosInstance.patch(
+      `${ISSUES_URL}/${issueId}/status`,
+      { status },
+      { headers: getAdminHeaders() },
+    );
+  },
+
+  /** Single issue for admin (GET /api/issues/admin/:id) */
+  getIssueByIdAdmin: async (issueId) => {
+    return await axiosInstance.get(`${ISSUES_URL}/admin/${issueId}`, {
+      headers: getAdminHeaders(),
+    });
   },
 };
