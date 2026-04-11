@@ -18,7 +18,7 @@ export default function SideBar() {
       icon: <List size={20} /> 
     },
     { 
-      label: "Explore Community", 
+      label: "Explore Events", 
       path: "/organization/explore", // This now matches the AppRouter exactly
       icon: <Earth size={20} /> 
     },
