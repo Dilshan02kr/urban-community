@@ -71,12 +71,7 @@ const router = createBrowserRouter([
       },
       {
         path: "garbage-collectors",
-        element: (
-          <CivilianDashboardSubPage
-            title="Garbage collectors"
-            description="Schedules, contacts, and waste collection information."
-          />
-        ),
+        element: <GarbagePickupRequestPage />,
       },
       {
         path: "about",
@@ -87,10 +82,7 @@ const router = createBrowserRouter([
           />
         ),
       },
-      {
-        path: "garbage-pickup",
-        element: <GarbagePickupRequestPage />,
-      },
+
     ],
   },
   // not found route
