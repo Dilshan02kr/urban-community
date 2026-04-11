@@ -1,9 +1,9 @@
 import {
   createBrowserRouter,
+  Navigate,
   RouterProvider,
 } from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
-import { MainLayout } from "@/layouts/MainLayout";
 import { HomePage } from "@/pages/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ROUTES } from "@/constants/routes";
@@ -14,6 +14,19 @@ import RegisterOrganization from "@/pages/RegisterOrganization";
 import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
+import CivilianProfile from "@/pages/civilian/CivilianProfile";
+import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
+import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
+import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
+import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
+import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
+import { ProtectedRoute } from "./ProtectedRoute";
+import OrganizationLayout from "@/layouts/OrganizationLayout";
+import OrganizationEvents from "@/pages/organization/OrganizationEvents";
+import OrganizationDashboard from "@/pages/organization/OrganizationDashboard";
+import OrgProfile from "@/pages/organization/OrgProfile";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +35,14 @@ const router = createBrowserRouter([
       {
         path: ROUTES.LOGIN,
         element: <LoginPage />,
+      },
+      {
+        path: ROUTES.REGISTER_CIVILIAN,
+        element: <RegisterCivilian />,
+      },
+      {
+        path: ROUTES.REGISTER_ORGANIZATION,
+        element: <RegisterOrganization />,
       },
     ],
   },
@@ -34,57 +55,114 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Organization dashboard
   {
-    path: ROUTES.REGISTER_CIVILIAN,
-    element: <RegisterCivilian />,
+    element: <ProtectedRoute role="organization" />,
+    children: [
+      {
+        path: ROUTES.ORGANIZATION_LAYOUT,
+        element: <OrganizationLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to={ROUTES.ORGANIZATION_DASHBOARD} replace />,
+          },
+          {
+            path: "dashboard",
+            element: <OrganizationDashboard />,
+          },
+          {
+            path: "events",
+            element: <OrganizationEvents />,
+          },
+          {
+            path: "explore-events",
+            element: <OrganizationEvents />,
+          },
+          {
+            path: "profile",
+            element: <OrgProfile />,
+          },
+        ],
+      },
+    ],
   },
+  // Civilian dashboard
   {
-    path: ROUTES.REGISTER_ORGANIZATION,
-    element: <RegisterOrganization />,
+    element: <ProtectedRoute role="citizen" />,
+    children: [
+      {
+        path: ROUTES.DASHBOARD,
+        element: <CivilianDashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <CivilianDashboardHomePage />,
+          },
+          {
+            path: "events",
+            element: (
+              <CivilianDashboardSubPage
+                title="Events"
+                description="Eco programs, clean-up drives, and community happenings."
+              />
+            ),
+          },
+          {
+            path: "issue-reporting",
+            element: (
+              <CivilianDashboardSubPage
+                title="Issue Reporting"
+                description="Report civic issues and track responses from your area."
+              />
+            ),
+          },
+          {
+            path: "garbage-collectors",
+            element: <GarbagePickupRequestPage />,
+          },
+          {
+            path: "recycling-centers",
+            element: <RecyclingCentersPage />,
+          },
+          {
+            path: "about",
+            element: (
+              <CivilianDashboardSubPage
+                title="About"
+                description="Urban Community — connect, report, and improve your city."
+              />
+            ),
+          },
+          {
+            path: ROUTES.CIVILIAN_PROFILE,
+            element: <CivilianProfile />,
+          },
+        ],
+      },
+    ],
   },
+  // Admin login (standalone page)
   {
-    path: ROUTES.DASHBOARD,
-    element: <CivilianDashboardLayout />,
+    path: ROUTES.ADMIN_LOGIN,
+    element: <AdminLoginPage />,
+  },
+  // Admin dashboard
+  {
+    path: ROUTES.ADMIN_DASHBOARD,
+    element: <AdminDashboardLayout />,
     children: [
       {
         index: true,
-        element: <CivilianDashboardHomePage />,
+        element: <AdminDashboardHomePage />,
       },
       {
-        path: "events",
-        element: (
-          <CivilianDashboardSubPage
-            title="Events"
-            description="Eco programs, clean-up drives, and community happenings."
-          />
-        ),
+        path: "recycling-centers",
+        element: <AdminRecyclingCentersPage />,
       },
       {
-        path: "issue-reporting",
-        element: (
-          <CivilianDashboardSubPage
-            title="Issue Reporting"
-            description="Report civic issues and track responses from your area."
-          />
-        ),
-      },
-      {
-        path: "garbage-collectors",
-        element: (
-          <CivilianDashboardSubPage
-            title="Garbage collectors"
-            description="Schedules, contacts, and waste collection information."
-          />
-        ),
-      },
-      {
-        path: "about",
-        element: (
-          <CivilianDashboardSubPage
-            title="About"
-            description="Urban Community — connect, report, and improve your city."
-          />
-        ),
+        path: "pickup-requests",
+        element: <AdminPickupRequestsPage />,
       },
     ],
   },

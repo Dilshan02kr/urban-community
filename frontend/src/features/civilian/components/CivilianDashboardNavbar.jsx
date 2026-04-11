@@ -20,9 +20,7 @@ export function CivilianDashboardNavbar() {
   const { logout } = useAuth()
 
   const handleLogout = () => {
-    logout()
-    setOpen(false)
-    navigate(ROUTES.LOGIN)
+   navigate(ROUTES.CIVILIAN_PROFILE)
   }
 
   return (
@@ -62,7 +60,7 @@ export function CivilianDashboardNavbar() {
             className="hidden rounded-xl border border-slate-200/90 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 lg:inline-flex"
             onClick={handleLogout}
           >
-            Log Out
+            Profile
           </button>
           <button
             type="button"

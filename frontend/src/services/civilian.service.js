@@ -10,4 +10,10 @@ export const civilianService = {
       password: formData.password,
     });
   },
+  profile: async () => {
+    return await axiosInstance.get(`${API_BASE_URL}/me`);
+  },
+  updateProfile: async (formData) => {
+    return await axiosInstance.put(`${API_BASE_URL}/me`, formData);
+  },
 };
