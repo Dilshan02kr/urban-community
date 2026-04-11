@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
         if (data.user.role === "citizen") {
           Navigate(ROUTES.DASHBOARD);
         } else if (data.user.role === "organization") {
-          Navigate(ROUTES.ORGANIZATION_PROFILE);
+          Navigate(ROUTES.ORGANIZATION_DASHBOARD);
         }
       }
       return data;

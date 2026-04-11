@@ -1,6 +1,5 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
-import { MainLayout } from "@/layouts/MainLayout";
 import { HomePage } from "@/pages/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ROUTES } from "@/constants/routes";
@@ -19,6 +18,10 @@ import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
 import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
 import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
+import { ProtectedRoute } from "./ProtectedRoute";
+import OrganizationLayout from "@/layouts/OrganizationLayout";
+import OrganizationEvents from "@/pages/organization/OrganizationEvents";
+import OrganizationDashboard from "@/pages/organization/OrganizationDashboard";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +50,30 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  // Organization dashboard
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: ROUTES.ORGANIZATION_LAYOUT,
+        element: <OrganizationLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to={ROUTES.ORGANIZATION_DASHBOARD} replace />,
+          },
+          {
+            path: "dashboard",
+            element: <OrganizationDashboard />,
+          },
+          {
+            path: "events",
+            element: <OrganizationEvents />,
+          },
+        ],
+      },
+    ],
+  },
   {
     path: ROUTES.DASHBOARD,
     element: <CivilianDashboardLayout />,
@@ -94,7 +120,7 @@ const router = createBrowserRouter([
       {
         path: ROUTES.CIVILIAN_PROFILE,
         element: <CivilianProfile />,
-
+      },
     ],
   },
   // Admin login (standalone page)

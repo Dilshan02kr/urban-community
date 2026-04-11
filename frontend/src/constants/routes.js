@@ -15,4 +15,8 @@ export const ROUTES = {
   ADMIN_DASHBOARD: '/admin',
   ADMIN_RECYCLING_CENTERS: '/admin/recycling-centers',
   ADMIN_PICKUP_REQUESTS: '/admin/pickup-requests',
+  ORGANIZATION_LAYOUT: '/organization',
+  ORGANIZATION_DASHBOARD: '/organization/dashboard',
+  ORGANIZATION_EVENTS: '/organization/events',
+  ORGANIZATION_EXPLORE_EVENTS: '/organization/explore-events',
 }
