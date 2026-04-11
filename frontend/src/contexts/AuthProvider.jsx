@@ -1,6 +1,6 @@
 import { ROUTES } from "@/constants/routes";
 import { authService } from "@/services/auth.service";
-import { getSessionValue, removeSession, setSession } from "@/utils/session";
+import { clearSession, getSessionValue, removeSession, setSession } from "@/utils/session";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -42,13 +42,13 @@ export function AuthProvider({ children }) {
       }
       return data;
     } catch (error) {
-      throw error.response.data.message || "Login failed. Please try again.";
+      throw error?.response?.data?.message || "Login failed. Please try again.";
     }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    removeSession();
+    clearSession();
     window.location.replace(ROUTES.LOGIN);
   };
 
