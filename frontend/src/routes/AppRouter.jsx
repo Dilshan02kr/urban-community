@@ -13,7 +13,7 @@ import LoginPage from "@/pages/LoginPage";
 import RegisterOrganization from "@/pages/RegisterOrganization";
 import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
-import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
+import CivilianDashboardSubPage from "@/pages/civilian/CivilianEvents";
 import CivilianProfile from "@/pages/civilian/CivilianProfile";
 import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
 import IssueReportingPage from "@/pages/civilian/IssueReportingPage";
@@ -29,6 +29,8 @@ import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
 import OrganizationDashboard from "@/pages/organization/OrganizationDashboard";
 import OrgProfile from "@/pages/organization/OrgProfile";
+import OrgRequests from "@/pages/organization/OrgRequests";
+import CivilianEvents from "@/pages/civilian/CivilianEvents";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +87,10 @@ const router = createBrowserRouter([
             path: "profile",
             element: <OrgProfile />,
           },
+          {
+            path: "requests",
+            element: <OrgRequests />,
+          },
         ],
       },
     ],
@@ -103,12 +109,7 @@ const router = createBrowserRouter([
           },
           {
             path: "events",
-            element: (
-              <CivilianDashboardSubPage
-                title="Events"
-                description="Eco programs, clean-up drives, and community happenings."
-              />
-            ),
+            element: <CivilianEvents />,
           },
           {
             path: "issue-reporting/:issueId",

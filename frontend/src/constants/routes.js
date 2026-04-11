@@ -13,6 +13,7 @@ export const ROUTES = {
   REGISTER_ORGANIZATION: '/register/organization',
   CIVILIAN_PROFILE: '/dashboard/profile',
   ORGANIZATION_PROFILE: '/organization/profile',
+  ORGANIZATION_REQUESTS: '/organization/requests',
   ADMIN_LOGIN: '/admin/login',
   ADMIN_DASHBOARD: '/admin',
   ADMIN_RECYCLING_CENTERS: '/admin/recycling-centers',
