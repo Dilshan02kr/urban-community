@@ -3,6 +3,7 @@ import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { CIVILIAN_DASHBOARD_NAV } from '@/features/civilian/data/dashboardNav'
 import { ROUTES } from '@/constants/routes'
 import { useCivilian } from '@/contexts/CivilianProvider'
+import { Recycle } from 'lucide-react'
 
 function navLinkClass({ isActive }) {
   return [
@@ -38,7 +39,7 @@ export function CivilianDashboardNavbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8">
         <Link to={ROUTES.HOME} className="flex min-w-0 shrink-0 items-center gap-3 text-left">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-xl shadow-md shadow-emerald-200/50">
-            🌍
+            <Recycle size={32} strokeWidth={2.5}/>
           </div>
           <div className="min-w-0">
             <p className="truncate text-lg font-bold tracking-wide text-slate-900">
