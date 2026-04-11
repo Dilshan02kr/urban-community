@@ -1,6 +1,6 @@
 import axiosInstance from "./axiosInstance";
 
-const API_BASE_URL = "/api/patients";
+const API_BASE_URL = "/api/users";
 
 const headers = {
   "Content-Type": "application/json",
@@ -13,7 +13,7 @@ const options = {
 
 export const authService = {
   login: async (email, password) => {
-    return await axiosInstance.post(`${API_BASE_URL}/auth/login`, {
+    return await axiosInstance.post(`${API_BASE_URL}/login`, {
       email,
       password,
     });
