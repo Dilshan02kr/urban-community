@@ -1,6 +1,6 @@
 import { ROUTES } from "@/constants/routes";
 import { authService } from "@/services/auth.service";
-import { getSessionValue, removeSession, setSession } from "@/utils/session";
+import { clearSession, getSessionValue, removeSession, setSession } from "@/utils/session";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setIsAuthenticated(false);
-    removeSession();
+    clearSession();
     window.location.replace(ROUTES.LOGIN);
   };
 
