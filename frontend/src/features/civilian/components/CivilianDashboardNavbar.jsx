@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { CIVILIAN_DASHBOARD_NAV } from '@/features/civilian/data/dashboardNav'
 import { ROUTES } from '@/constants/routes'
-import { useAuth } from '@/contexts/AuthProvider'
+import { useCivilian } from '@/contexts/CivilianProvider'
 
 function navLinkClass({ isActive }) {
   return [
@@ -17,10 +17,17 @@ export function CivilianDashboardNavbar() {
   const [open, setOpen] = useState(false)
   const menuId = useId()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { civilian } = useCivilian()
+
+  const displayName =
+    civilian?.name?.trim() ||
+    JSON.parse(sessionStorage.getItem('user') || '{}')?.name ||
+    'User'
+  const avatarText = displayName.charAt(0).toUpperCase()
+  const profileImage = civilian?.profileImage?.trim() || ''
 
   const handleLogout = () => {
-   navigate(ROUTES.CIVILIAN_PROFILE)
+    navigate(ROUTES.CIVILIAN_PROFILE)
   }
 
   return (
@@ -57,9 +64,21 @@ export function CivilianDashboardNavbar() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <button
             type="button"
-            className="hidden rounded-xl border border-slate-200/90 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 lg:inline-flex"
+            className="hidden items-center gap-2 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 lg:inline-flex"
             onClick={handleLogout}
+            aria-label="Open profile"
           >
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt={displayName}
+                className="h-7 w-7 rounded-full object-cover ring-1 ring-slate-200"
+              />
+            ) : (
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+                {avatarText}
+              </span>
+            )}
             Profile
           </button>
           <button

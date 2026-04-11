@@ -10,5 +10,4 @@ export const CIVILIAN_DASHBOARD_NAV = [
     end: false,
   },
   { label: 'Recycling Centers', to: ROUTES.DASHBOARD_RECYCLING_CENTERS, end: false },
-  { label: 'About', to: ROUTES.DASHBOARD_ABOUT, end: false },
 ]
