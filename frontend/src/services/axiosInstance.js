@@ -1,4 +1,4 @@
-import { removeSession } from "@/utils/session";
+import { getSessionValue, removeSession } from "@/utils/session";
 import axios from "axios";
 import { message } from "antd";
 
@@ -17,7 +17,17 @@ const axiosInstance = axios.create({
   },
 });
 
+const getAccessToken = () => {
+  return getSessionValue("accessToken");
+};
+
 const requestHandler = (request) => {
+  if (request.headers && !request.headers["Authorization"]) {
+    const token = getAccessToken();
+    if (token) {
+      request.headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
   return request;
 };
 
@@ -79,19 +89,19 @@ const errorHandler = async (error) => {
 
       // Clear preferences FIRST before redirecting
       try {
-        await removeSession("accessToken");
-        await removeSession("user");
-        await removeSession("userProfile");
+        // await removeSession("accessToken");
+        // await removeSession("user");
+        // await removeSession("userProfile");
         console.log("✅ Preferences cleared successfully");
       } catch (clearError) {
         console.error("❌ Error clearing preferences:", clearError);
       }
 
-     // Redirect to login page
+      // Redirect to login page
       setTimeout(() => {
         window.location.href = "/login";
       }, 1000);
-      
+
       // Reset refreshFlag after a delay to allow future 401 handling
       setTimeout(() => {
         refreshFlag = true;
