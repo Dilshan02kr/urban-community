@@ -122,12 +122,12 @@ const getMyEvents = async (req, res, next) => {
   }
 };
 
-// Add it to the exports
+// exports
 module.exports = { 
   createEvent, 
   updateEvent, 
   deleteEvent,
   getAllEvents,
   getEventById,
-  getMyEvents // <--- Add this
+  getMyEvents 
 };
