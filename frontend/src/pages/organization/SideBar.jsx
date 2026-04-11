@@ -1,4 +1,4 @@
-import { Earth, Home, List, Plus, User } from "lucide-react";
+import { Earth, Home, List, User } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
