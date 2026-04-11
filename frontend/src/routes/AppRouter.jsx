@@ -15,6 +15,7 @@ import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
 import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
+import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "garbage-collectors",
         element: <GarbagePickupRequestPage />,
+      },
+      {
+        path: "recycling-centers",
+        element: <RecyclingCentersPage />,
       },
       {
         path: "about",

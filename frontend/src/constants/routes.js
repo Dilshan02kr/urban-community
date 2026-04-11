@@ -6,6 +6,7 @@ export const ROUTES = {
   DASHBOARD_ISSUE_REPORTING: '/dashboard/issue-reporting',
   DASHBOARD_GARBAGE_COLLECTORS: '/dashboard/garbage-collectors',
   DASHBOARD_ABOUT: '/dashboard/about',
+  DASHBOARD_RECYCLING_CENTERS: '/dashboard/recycling-centers',
   REGISTER_CIVILIAN: '/register/civilian',
   REGISTER_ORGANIZATION: '/register/organization',
 }
