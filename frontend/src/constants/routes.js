@@ -18,6 +18,8 @@ export const ROUTES = {
   ADMIN_DASHBOARD: '/admin',
   ADMIN_USER_MANAGEMENT: '/admin/users',
   ADMIN_EVENT_MANAGEMENT: '/admin/events',
+  /** @param {string} eventId */
+  adminEventDetail: (eventId) => `/admin/events/${eventId}`,
   ADMIN_RECYCLING_CENTERS: '/admin/recycling-centers',
   ADMIN_PICKUP_REQUESTS: '/admin/pickup-requests',
   ADMIN_ISSUE_MANAGEMENT: '/admin/issues',
