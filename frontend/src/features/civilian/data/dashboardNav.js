@@ -10,4 +10,5 @@ export const CIVILIAN_DASHBOARD_NAV = [
     end: false,
   },
   { label: 'About', to: ROUTES.DASHBOARD_ABOUT, end: false },
+  { label: 'Garbage Pickup', to: ROUTES.DASHBOARD_GARBAGE_PICKUP, end: false },
 ]

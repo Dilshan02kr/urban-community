@@ -14,6 +14,7 @@ import RegisterOrganization from "@/pages/RegisterOrganization";
 import { CivilianDashboardLayout } from "@/layouts/CivilianDashboardLayout";
 import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePage";
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianDashboardSubPage";
+import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
             description="Urban Community — connect, report, and improve your city."
           />
         ),
+      },
+      {
+        path: "garbage-pickup",
+        element: <GarbagePickupRequestPage />,
       },
     ],
   },
