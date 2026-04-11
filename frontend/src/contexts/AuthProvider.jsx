@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const body = await authService.login(email, password);
+    console.log("LOGIN BODY:", JSON.stringify(body));
     if (body.statusCode === 200 && body.data?.token) {
       setIsAuthenticated(true);
       setSession("accessToken", body.data.token);
