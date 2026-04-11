@@ -8,6 +8,7 @@ const CivilianContext = createContext();
 
 export function CivilianProvider({ children }) {
   const [civilian, setCivilian] = useState(null);
+  const [events, setEvents] = useState([]);
 
   const register = async (formData) => {
     try {
@@ -57,9 +58,38 @@ export function CivilianProvider({ children }) {
       );
     }
   };
+
+  const getEvents = async () => {
+    try {
+      const res = await civilianService.getEvents();
+      if (res.status === 200) {
+        setEvents(res.data.data);
+      }
+    } catch (error) {
+      throw error.response?.data?.message || "Failed to fetch events";
+    }
+  };
+
+  const sendEventRequest = async (eventId) => {
+    try {
+      const res = await civilianService.sendEventRequest(eventId);
+      return res.data;
+    } catch (error) {
+      throw error.response?.data?.message || "Failed to send request";
+    }
+  };
+
   return (
     <CivilianContext.Provider
-      value={{ register, getProfile, updateProfile, civilian }}
+      value={{
+        register,
+        getProfile,
+        updateProfile,
+        civilian,
+        events,
+        getEvents,
+        sendEventRequest,
+      }}
     >
       {children}
     </CivilianContext.Provider>

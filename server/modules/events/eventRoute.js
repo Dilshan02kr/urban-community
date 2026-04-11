@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/my-events", auth, eventController.getMyEvents);
 
 //read
-router.get("/", eventController.getAllEvents);
+router.get("/", auth, eventController.getAllEvents);
 router.get("/:id", eventController.getEventById);
 
 
