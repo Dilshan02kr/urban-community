@@ -88,4 +88,13 @@ export const adminService = {
       headers: getAdminHeaders(),
     });
   },
+
+  /** PATCH /api/issues/:id/admin-response */
+  addAdminResponse: async (issueId, adminResponse) => {
+    return await axiosInstance.patch(
+      `${ISSUES_URL}/${issueId}/admin-response`,
+      { adminResponse },
+      { headers: getAdminHeaders() },
+    );
+  },
 };

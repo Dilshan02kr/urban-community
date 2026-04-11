@@ -14,6 +14,8 @@ import {
   XCircle,
   FileText,
   CircleDot,
+  MessageSquare,
+  Send,
 } from "lucide-react";
 
 const ISSUE_CATEGORIES = [
@@ -69,6 +71,8 @@ export default function AdminIssueDetailPage() {
   const [issue, setIssue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [responseDraft, setResponseDraft] = useState("");
+  const [savingResponse, setSavingResponse] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -102,6 +106,10 @@ export default function AdminIssueDetailPage() {
     };
   }, [issueId]);
 
+  useEffect(() => {
+    setResponseDraft(issue?.adminResponse ?? "");
+  }, [issueId, issue?._id]);
+
   const goBack = () => {
     navigate(ROUTES.ADMIN_ISSUE_MANAGEMENT);
   };
@@ -125,6 +133,39 @@ export default function AdminIssueDetailPage() {
       );
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const submitAdminResponse = async () => {
+    if (issue?.status !== "InProgress") {
+      message.warning(
+        "Admin responses can only be added while the issue is in progress.",
+      );
+      return;
+    }
+    const text = responseDraft.trim();
+    if (!text) {
+      message.warning("Please enter an admin response.");
+      return;
+    }
+    if (!issue?._id || savingResponse) return;
+    setSavingResponse(true);
+    try {
+      const res = await adminService.addAdminResponse(issue._id, text);
+      const updated = res.data?.data;
+      if (updated) {
+        setIssue(updated);
+        setResponseDraft(updated.adminResponse ?? text);
+        message.success(
+          res.data?.message || "Admin response saved.",
+        );
+      }
+    } catch (err) {
+      message.error(
+        err.response?.data?.message || "Could not save admin response.",
+      );
+    } finally {
+      setSavingResponse(false);
     }
   };
 
@@ -317,6 +358,107 @@ export default function AdminIssueDetailPage() {
           </section>
         )}
 
+        {issue.status === "InProgress" ? (
+          <section
+            className={[
+              "rounded-2xl border p-6",
+              issue.adminResponse
+                ? "border-emerald-500/25 bg-emerald-950/20"
+                : "border-white/[0.06] bg-white/[0.03]",
+            ].join(" ")}
+          >
+            <h2 className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <MessageSquare
+                className="h-4 w-4 text-indigo-400/80"
+                aria-hidden
+              />
+              Admin response
+            </h2>
+            <p className="mb-4 text-xs text-slate-600">
+              Shown to the citizen on their issue. Submit to save; you can edit
+              and submit again anytime.
+            </p>
+
+            {issue.adminResponse ? (
+              <div className="mb-6 rounded-xl border border-emerald-500/35 bg-gradient-to-b from-emerald-950/50 to-emerald-950/20 p-5">
+                <h3 className="text-sm font-semibold tracking-tight text-emerald-300">
+                  Admin&apos;s response
+                </h3>
+                <p className="mt-1 text-xs text-emerald-500/80">
+                  This is what the reporter sees for this issue.
+                </p>
+                <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-emerald-50/95">
+                  {issue.adminResponse}
+                </p>
+              </div>
+            ) : null}
+
+            <label
+              htmlFor="admin-issue-response"
+              className="mb-2 block text-xs font-medium text-slate-400"
+            >
+              {issue.adminResponse ? "Update response" : "Write response"}
+            </label>
+            <textarea
+              id="admin-issue-response"
+              value={responseDraft}
+              onChange={(e) => setResponseDraft(e.target.value)}
+              rows={5}
+              maxLength={2000}
+              placeholder="Write your official response to this issue…"
+              disabled={savingResponse}
+              className="w-full resize-y rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 outline-none ring-indigo-500/30 transition focus:border-indigo-500/40 focus:ring-2 disabled:opacity-60"
+            />
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs text-slate-600">
+                {responseDraft.length} / 2000
+              </span>
+              <button
+                type="button"
+                disabled={savingResponse || !responseDraft.trim()}
+                onClick={submitAdminResponse}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/35 bg-emerald-600/90 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/15 transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {savingResponse ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : (
+                  <Send className="h-4 w-4" aria-hidden />
+                )}
+                Submit response
+              </button>
+            </div>
+          </section>
+        ) : (
+          <section className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+            <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <MessageSquare
+                className="h-4 w-4 text-indigo-400/80"
+                aria-hidden
+              />
+              Admin response
+            </h2>
+            {issue.adminResponse ? (
+              <div className="rounded-xl border border-emerald-500/35 bg-gradient-to-b from-emerald-950/50 to-emerald-950/20 p-5">
+                <h3 className="text-sm font-semibold tracking-tight text-emerald-300">
+                  Admin&apos;s response
+                </h3>
+                <p className="mt-1 text-xs text-emerald-500/80">
+                  Saved while this issue was in progress (read-only).
+                </p>
+                <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-emerald-50/95">
+                  {issue.adminResponse}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm leading-relaxed text-slate-500">
+                {issue.status === "Pending"
+                  ? "Admin responses can only be added while an issue is in progress. Use “Start resolving this issue” to move it to In progress first."
+                  : "Admin responses can only be added while an issue is in progress. No response was saved for this issue before it was closed."}
+              </p>
+            )}
+          </section>
+        )}
+
         {issue.resolvedAt && (
           <p className="text-xs text-slate-500">
             Marked resolved{" "}
@@ -325,17 +467,6 @@ export default function AdminIssueDetailPage() {
               timeStyle: "short",
             })}
           </p>
-        )}
-
-        {issue.adminResponse && (
-          <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6">
-            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-400/90">
-              Admin response
-            </h2>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-emerald-100/90">
-              {issue.adminResponse}
-            </p>
-          </section>
         )}
 
         {issue.image && (
