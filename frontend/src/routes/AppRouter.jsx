@@ -1,4 +1,8 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
 import { HomePage } from "@/pages/HomePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
@@ -22,6 +26,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
 import OrganizationDashboard from "@/pages/organization/OrganizationDashboard";
+import OrgProfile from "@/pages/organization/OrgProfile";
 
 const router = createBrowserRouter([
   {
@@ -52,7 +57,7 @@ const router = createBrowserRouter([
   },
   // Organization dashboard
   {
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute role="organization" />,
     children: [
       {
         path: ROUTES.ORGANIZATION_LAYOUT,
@@ -70,56 +75,70 @@ const router = createBrowserRouter([
             path: "events",
             element: <OrganizationEvents />,
           },
+          {
+            path: "explore-events",
+            element: <OrganizationEvents />,
+          },
+          {
+            path: "profile",
+            element: <OrgProfile />,
+          },
         ],
       },
     ],
   },
+  // Civilian dashboard
   {
-    path: ROUTES.DASHBOARD,
-    element: <CivilianDashboardLayout />,
+    element: <ProtectedRoute role="citizen" />,
     children: [
       {
-        index: true,
-        element: <CivilianDashboardHomePage />,
-      },
-      {
-        path: "events",
-        element: (
-          <CivilianDashboardSubPage
-            title="Events"
-            description="Eco programs, clean-up drives, and community happenings."
-          />
-        ),
-      },
-      {
-        path: "issue-reporting",
-        element: (
-          <CivilianDashboardSubPage
-            title="Issue Reporting"
-            description="Report civic issues and track responses from your area."
-          />
-        ),
-      },
-      {
-        path: "garbage-collectors",
-        element: <GarbagePickupRequestPage />,
-      },
-      {
-        path: "recycling-centers",
-        element: <RecyclingCentersPage />,
-      },
-      {
-        path: "about",
-        element: (
-          <CivilianDashboardSubPage
-            title="About"
-            description="Urban Community — connect, report, and improve your city."
-          />
-        ),
-      },
-      {
-        path: ROUTES.CIVILIAN_PROFILE,
-        element: <CivilianProfile />,
+        path: ROUTES.DASHBOARD,
+        element: <CivilianDashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <CivilianDashboardHomePage />,
+          },
+          {
+            path: "events",
+            element: (
+              <CivilianDashboardSubPage
+                title="Events"
+                description="Eco programs, clean-up drives, and community happenings."
+              />
+            ),
+          },
+          {
+            path: "issue-reporting",
+            element: (
+              <CivilianDashboardSubPage
+                title="Issue Reporting"
+                description="Report civic issues and track responses from your area."
+              />
+            ),
+          },
+          {
+            path: "garbage-collectors",
+            element: <GarbagePickupRequestPage />,
+          },
+          {
+            path: "recycling-centers",
+            element: <RecyclingCentersPage />,
+          },
+          {
+            path: "about",
+            element: (
+              <CivilianDashboardSubPage
+                title="About"
+                description="Urban Community — connect, report, and improve your city."
+              />
+            ),
+          },
+          {
+            path: ROUTES.CIVILIAN_PROFILE,
+            element: <CivilianProfile />,
+          },
+        ],
       },
     ],
   },

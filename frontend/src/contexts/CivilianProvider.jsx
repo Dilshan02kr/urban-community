@@ -1,6 +1,8 @@
+import { ROUTES } from "@/constants/routes";
 import { civilianService } from "@/services/civilian.service";
 import { setSession } from "@/utils/session";
 import { createContext, useContext, useState } from "react";
+import { Navigate } from "react-router-dom";
 
 const CivilianContext = createContext();
 
@@ -10,11 +12,12 @@ export function CivilianProvider({ children }) {
   const register = async (formData) => {
     try {
       const res = await civilianService.register(formData);
-
       const data = res.data.data;
+
       if (res.status === 201) {
         setSession("accessToken", data.token);
         setSession("user", JSON.stringify(data.user));
+        Navigate(ROUTES.DASHBOARD);
       }
       return res.data;
     } catch (error) {
