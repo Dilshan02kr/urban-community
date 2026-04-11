@@ -5,6 +5,14 @@ import { getSessionValue } from "@/utils/session";
 export default function OrganizationEvents() {
   const [view, setView] = useState("overview");
   const [events, setEvents] = useState([]);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    organization: "",
+  });
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -13,243 +21,525 @@ export default function OrganizationEvents() {
     organization: "",
   });
 
-  /**
-   * FIXED TOKEN RESOLVER
-   * Uses the same getSessionValue utility as AuthProvider,
-   * ensuring the token is unwrapped correctly regardless of how setSession stores it.
-   */
   const getAuthToken = () => getSessionValue("accessToken");
 
-  // 1. Fetch Events (Read)
-  const fetchEvents = async () => {
+  const fetchMyEvents = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/events");
-      setEvents(response.data.data);
+      const token = getAuthToken();
+      const response = await axios.get("http://localhost:3000/api/events/my-events", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setEvents(response.data.data || []);
     } catch (err) {
-      console.error("Error fetching events", err);
+      console.error("Error fetching your events", err);
     }
   };
 
   useEffect(() => {
-    fetchEvents();
+    fetchMyEvents();
   }, []);
 
-  // 2. Handle Form Submission (Create)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = getAuthToken();
-
-      if (!token) {
-        alert(
-          "Authentication Required: We couldn't find your login session. Please log in again.",
-        );
-        return;
-      }
-
       await axios.post("http://localhost:3000/api/events", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      alert("🎉 Event registered successfully!");
-      setFormData({
-        title: "",
-        description: "",
-        date: "",
-        location: "",
-        organization: "",
-      });
-      fetchEvents();
+      alert("Event registered successfully!");
+      setFormData({ title: "", description: "", date: "", location: "", organization: "" });
       setView("overview");
+      fetchMyEvents();
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.message ||
-        "Registration failed. Check your connection.";
-      alert(errorMsg);
+      alert(err.response?.data?.message || "Registration failed.");
     }
   };
 
-  // 3. Handle Deletion (Delete)
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
       const token = getAuthToken();
-
       await axios.delete(`http://localhost:3000/api/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      fetchEvents();
+      fetchMyEvents();
     } catch (err) {
-      console.error("Delete failed", err);
-      alert("Unauthorized: You do not have permission to delete this event.");
+      alert("Unauthorized: Only the creator can delete this event.");
     }
   };
+
+  const openEditModal = (event) => {
+    setEditingEvent(event);
+    setEditForm({
+      title: event.title || "",
+      description: event.description || "",
+      date: event.date ? event.date.substring(0, 10) : "",
+      location: event.location || "",
+      organization: event.organization || "",
+    });
+  };
+
+  const closeEditModal = () => setEditingEvent(null);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const token = getAuthToken();
+      await axios.put(`http://localhost:3000/api/events/${editingEvent._id}`, editForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      closeEditModal();
+      fetchMyEvents();
+    } catch (err) {
+      alert(err.response?.data?.message || "Update failed.");
+    }
+  };
+
+  const TrashIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+    </svg>
+  );
+
+  const EditIcon = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+
+  const inputStyle = {
+    background: "#0f1117",
+    border: "1px solid rgba(255,255,255,0.1)",
+    padding: "11px 14px",
+    color: "#f1f5f9",
+    borderRadius: "10px",
+    fontSize: "14px",
+    width: "100%",
+    outline: "none",
+    fontFamily: "inherit",
+  };
+
+  const focusInput = (e) => {
+    e.target.style.borderColor = "rgba(16,185,129,0.5)";
+    e.target.style.boxShadow = "0 0 0 3px rgba(16,185,129,0.08)";
+  };
+
+  const blurInput = (e) => {
+    e.target.style.borderColor = "rgba(255,255,255,0.1)";
+    e.target.style.boxShadow = "none";
+  };
+
   return (
-    <div>
-      <header className="mb-10 flex justify-between items-end border-b border-white/5 pb-8">
+    <div className="p-6 lg:p-10 min-h-screen" style={{ background: "#0f1117", color: "#f1f5f9" }}>
+
+      {/* ── Edit Modal ── */}
+      {editingEvent && (
+        <div
+          onClick={closeEditModal}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.65)",
+            backdropFilter: "blur(4px)",
+            zIndex: 50,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1.5rem",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#1a1d27",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "20px",
+              padding: "2rem",
+              width: "100%",
+              maxWidth: "560px",
+            }}
+          >
+            {/* Modal header */}
+            <div
+              className="flex justify-between items-start mb-6 pb-5"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+            >
+              <div>
+                <h2 style={{ fontSize: "18px", fontWeight: 600, color: "#f1f5f9" }}>
+                  Edit Initiative
+                </h2>
+                <p style={{ fontSize: "13px", color: "#6b7280", marginTop: "3px" }}>
+                  Update the details for this event.
+                </p>
+              </div>
+              <button
+                onClick={closeEditModal}
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  color: "#9ca3af",
+                  borderRadius: "8px",
+                  width: "32px",
+                  height: "32px",
+                  cursor: "pointer",
+                  fontSize: "20px",
+                  lineHeight: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Modal form */}
+            <form onSubmit={handleUpdate}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                {[
+                  { label: "Event Title", key: "title", type: "text", placeholder: "Eco-Drive 2026" },
+                  { label: "Event Date", key: "date", type: "date", placeholder: "" },
+                  { label: "Location", key: "location", type: "text", placeholder: "Kandy, Central Park" },
+                  { label: "Organization", key: "organization", type: "text", placeholder: "Urban Care Team" },
+                ].map(({ label, key, type, placeholder }) => (
+                  <div key={key} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#6b7280" }}>
+                      {label}
+                    </label>
+                    <input
+                      type={type}
+                      placeholder={placeholder}
+                      value={editForm[key]}
+                      onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+                      required
+                      style={inputStyle}
+                      onFocus={focusInput}
+                      onBlur={blurInput}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "1.5rem" }}>
+                <label style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: "#6b7280" }}>
+                  Description
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Program details and objectives..."
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  required
+                  style={{ ...inputStyle, resize: "none", lineHeight: "1.6" }}
+                  onFocus={focusInput}
+                  onBlur={blurInput}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    background: "#10b981",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "11px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => (e.target.style.background = "#059669")}
+                  onMouseLeave={(e) => (e.target.style.background = "#10b981")}
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  style={{
+                    padding: "11px 20px",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    color: "#9ca3af",
+                    borderRadius: "10px",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.color = "#f1f5f9";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                    e.currentTarget.style.color = "#9ca3af";
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Header ── */}
+      <header
+        className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 pb-6"
+        style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+      >
         <div>
-          <h1 className="text-4xl font-extrabold text-white tracking-tight">
-            {view === "overview" ? "Eco-Event Hub" : "Host a New Initiative"}
+          <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#f1f5f9", letterSpacing: "-0.5px" }}>
+            {view === "overview" ? "My Eco-Hub" : "Host a New Initiative"}
           </h1>
-          <p className="text-slate-400 mt-2 font-medium">
-            Manage your community sustainability programs.
+          <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+            {view === "overview"
+              ? "Manage and track your organization's contributions."
+              : "Fill in the details to launch your next program."}
           </p>
         </div>
-        {view === "overview" && (
-          <div className="bg-slate-900 border border-white/10 px-6 py-3 rounded-2xl text-sm font-semibold shadow-xl">
-            Active Programs:{" "}
-            <span className="text-emerald-400 ml-2">{events.length}</span>
-          </div>
-        )}
+        <button
+          onClick={() => setView(view === "overview" ? "register" : "overview")}
+          className="text-sm font-semibold px-5 py-2.5 rounded-xl"
+          style={{ background: "#10b981", color: "#fff", border: "none", cursor: "pointer" }}
+          onMouseEnter={(e) => (e.target.style.background = "#059669")}
+          onMouseLeave={(e) => (e.target.style.background = "#10b981")}
+        >
+          {view === "overview" ? "+ Register Event" : "← Back to My Events"}
+        </button>
       </header>
 
-      {view === "overview" ? (
-        /* LIST VIEW */
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* ── Overview ── */}
+      {view === "overview" && (
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {events.length > 0 ? (
             events.map((event) => (
               <div
                 key={event._id}
-                className="bg-slate-900/80 border border-white/10 p-6 rounded-3xl hover:border-emerald-500/50 transition-all duration-300 group shadow-2xl relative overflow-hidden"
+                className="relative rounded-2xl p-5 transition-all duration-200"
+                style={{
+                  background: "#1a1d27",
+                  border: "1px solid rgba(255,255,255,0.09)",
+                  overflow: "hidden",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(16,185,129,0.4)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)")}
               >
-                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="flex justify-between items-start mb-4">
-                  <span className="bg-emerald-500/10 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-emerald-500/20">
-                    Live
-                  </span>
-                  <button
-                    onClick={() => handleDelete(event._id)}
-                    className="text-slate-500 hover:text-red-400 transition-colors p-1"
-                    title="Remove Event"
+                {/* Accent bar */}
+                <div
+                  className="absolute top-0 left-0 right-0"
+                  style={{ height: "3px", background: "#10b981", borderRadius: "16px 16px 0 0" }}
+                />
+
+                {/* Card top row */}
+                <div className="flex justify-between items-center mb-4 mt-1">
+                  <span
+                    className="text-xs font-bold uppercase px-3 py-1 rounded-full"
+                    style={{
+                      background: "rgba(16,185,129,0.12)",
+                      color: "#34d399",
+                      border: "1px solid rgba(16,185,129,0.2)",
+                      letterSpacing: "0.8px",
+                    }}
                   >
-                    🗑️
-                  </button>
+                    Active
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    {/* Edit button */}
+                    <button
+                      onClick={() => openEditModal(event)}
+                      title="Edit event"
+                      className="flex items-center justify-center rounded-lg transition-all"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "#6b7280",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(99,102,241,0.1)";
+                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.3)";
+                        e.currentTarget.style.color = "#a5b4fc";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                        e.currentTarget.style.color = "#6b7280";
+                      }}
+                    >
+                      <EditIcon />
+                    </button>
+
+                    {/* Delete button */}
+                    <button
+                      onClick={() => handleDelete(event._id)}
+                      title="Delete event"
+                      className="flex items-center justify-center rounded-lg transition-all"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "#6b7280",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(239,68,68,0.1)";
+                        e.currentTarget.style.borderColor = "rgba(239,68,68,0.3)";
+                        e.currentTarget.style.color = "#f87171";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                        e.currentTarget.style.color = "#6b7280";
+                      }}
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-emerald-400 transition-colors">
+
+                {/* Title & description */}
+                <h3 className="text-base font-semibold mb-2" style={{ color: "#f1f5f9", lineHeight: "1.4" }}>
                   {event.title}
                 </h3>
-                <p className="text-slate-400 text-sm line-clamp-3 mb-6 leading-relaxed">
+                <p
+                  className="text-sm mb-5"
+                  style={{
+                    color: "#64748b",
+                    lineHeight: "1.65",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
                   {event.description}
                 </p>
-                <div className="text-[11px] text-slate-500 space-y-3 pt-5 border-t border-white/5 font-medium">
-                  <p className="flex items-center gap-2">
-                    <span className="opacity-50 text-base">📍</span>{" "}
+
+                {/* Meta */}
+                <div
+                  className="pt-4 flex flex-col gap-2"
+                  style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+                >
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "#94a3b8" }}>
+                    <span style={{ fontSize: "12px" }}>📍</span>
                     {event.location}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <span className="opacity-50 text-base">📅</span>{" "}
-                    {new Date(event.date).toLocaleDateString(undefined, {
-                      dateStyle: "long",
-                    })}
-                  </p>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "#94a3b8" }}>
+                    <span style={{ fontSize: "12px" }}>📅</span>
+                    {new Date(event.date).toLocaleDateString(undefined, { dateStyle: "long" })}
+                  </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
-              <p className="text-slate-500 italic text-lg">
-                No community events listed yet.
+            <div
+              className="col-span-full py-20 text-center rounded-2xl"
+              style={{ border: "1.5px dashed rgba(255,255,255,0.07)" }}
+            >
+              <p className="text-base italic" style={{ color: "#4b5563" }}>
+                You haven't registered any community events yet.
               </p>
-              <button
-                onClick={() => setView("register")}
-                className="mt-4 text-emerald-400 hover:underline"
-              >
-                Click here to add the first one
-              </button>
             </div>
           )}
         </div>
-      ) : (
-        /* FORM VIEW */
-        <div className="max-w-3xl mx-auto bg-slate-900 border border-white/10 rounded-[2rem] p-10 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-6xl font-black">
-            FORM
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="flex flex-col gap-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
-                  Event Title
-                </label>
-                <input
-                  className="bg-slate-950 p-4 rounded-2xl border border-white/10 outline-none focus:border-emerald-500 transition-all text-white placeholder:text-slate-700"
-                  placeholder="Eco-Drive 2026"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
-                  Event Date
-                </label>
-                <input
-                  type="date"
-                  className="bg-slate-950 p-4 rounded-2xl border border-white/10 outline-none focus:border-emerald-500 transition-all text-white appearance-none"
-                  value={formData.date}
-                  onChange={(e) =>
-                    setFormData({ ...formData, date: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
-                  Location
-                </label>
-                <input
-                  className="bg-slate-950 p-4 rounded-2xl border border-white/10 outline-none focus:border-emerald-500 transition-all text-white placeholder:text-slate-700"
-                  placeholder="Colombo City Center"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-3">
-                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
-                  Host Organization
-                </label>
-                <input
-                  className="bg-slate-950 p-4 rounded-2xl border border-white/10 outline-none focus:border-emerald-500 transition-all text-white placeholder:text-slate-700"
-                  placeholder="Urban Care Team"
-                  value={formData.organization}
-                  onChange={(e) =>
-                    setFormData({ ...formData, organization: e.target.value })
-                  }
-                  required
-                />
-              </div>
+      )}
+
+      {/* ── Register form ── */}
+      {view === "register" && (
+        <div
+          className="max-w-2xl mx-auto rounded-2xl p-8"
+          style={{ background: "#1a1d27", border: "1px solid rgba(255,255,255,0.09)" }}
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { label: "Event Title", key: "title", type: "text", placeholder: "Eco-Drive 2026" },
+                { label: "Event Date", key: "date", type: "date", placeholder: "" },
+                { label: "Location", key: "location", type: "text", placeholder: "Kandy, Central Park" },
+                { label: "Organization", key: "organization", type: "text", placeholder: "Urban Care Team" },
+              ].map(({ label, key, type, placeholder }) => (
+                <div key={key} className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase" style={{ color: "#6b7280", letterSpacing: "0.8px" }}>
+                    {label}
+                  </label>
+                  <input
+                    type={type}
+                    placeholder={placeholder}
+                    value={formData[key]}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                    required
+                    className="rounded-xl text-sm outline-none transition-all"
+                    style={inputStyle}
+                    onFocus={focusInput}
+                    onBlur={blurInput}
+                  />
+                </div>
+              ))}
             </div>
-            <div className="flex flex-col gap-3">
-              <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">
-                Program Details
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold uppercase" style={{ color: "#6b7280", letterSpacing: "0.8px" }}>
+                Description
               </label>
               <textarea
-                rows="5"
-                className="bg-slate-950 p-4 rounded-2xl border border-white/10 outline-none focus:border-emerald-500 transition-all text-white placeholder:text-slate-700 resize-none"
-                placeholder="Outline the goals, registration process, and volunteer roles..."
+                rows={5}
+                placeholder="Program details and objectives..."
                 value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
+                className="rounded-xl text-sm outline-none transition-all resize-none"
+                style={{ ...inputStyle, lineHeight: "1.6" }}
+                onFocus={focusInput}
+                onBlur={blurInput}
               />
             </div>
-            <div className="flex gap-4 pt-6">
+
+            <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="flex-1 bg-emerald-500 text-slate-950 font-black px-8 py-4 rounded-2xl hover:bg-emerald-400 hover:-translate-y-0.5 transition-all shadow-lg shadow-emerald-500/20 active:translate-y-0"
+                className="flex-1 py-3 rounded-xl text-sm font-semibold"
+                style={{ background: "#10b981", color: "#fff", border: "none", cursor: "pointer" }}
+                onMouseEnter={(e) => (e.target.style.background = "#059669")}
+                onMouseLeave={(e) => (e.target.style.background = "#10b981")}
               >
                 Publish Initiative
               </button>
               <button
                 type="button"
                 onClick={() => setView("overview")}
-                className="px-8 py-4 rounded-2xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors"
+                className="px-6 py-3 rounded-xl text-sm font-semibold"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#9ca3af",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.color = "#f1f5f9";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                  e.currentTarget.style.color = "#9ca3af";
+                }}
               >
                 Cancel
               </button>

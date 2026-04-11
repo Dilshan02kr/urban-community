@@ -27,6 +27,7 @@ import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
 import OrganizationDashboard from "@/pages/organization/OrganizationDashboard";
 import OrgProfile from "@/pages/organization/OrgProfile";
+import ExploreEvents from "@/pages/organization/ExploreEvents";
 import OrgRequests from "@/pages/organization/OrgRequests";
 import CivilianEvents from "@/pages/civilian/CivilianEvents";
 
@@ -78,8 +79,8 @@ const router = createBrowserRouter([
             element: <OrganizationEvents />,
           },
           {
-            path: "explore-events",
-            element: <OrganizationEvents />,
+            path: "explore",
+            element: <ExploreEvents />,
           },
           {
             path: "profile",

@@ -139,10 +139,28 @@ const getEventById = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  createEvent,
-  updateEvent,
+// Get events specifically for the logged-in organization
+const getMyEvents = async (req, res, next) => {
+  try {
+    // req.user.id comes from your 'auth' middleware
+    const events = await Event.find({ orgId: req.user.id }).sort({ date: 1 });
+
+    return res.status(200).json({
+      success: true,
+      count: events.length,
+      data: events,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Add it to the exports
+module.exports = { 
+  createEvent, 
+  updateEvent, 
   deleteEvent,
   getAllEvents,
   getEventById,
+  getMyEvents // <--- Add this
 };

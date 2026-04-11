@@ -39,19 +39,36 @@ export default function RegisterOrganization() {
   };
 
   const handleSubmit = async (e) => {
+    // 1. Prevent default to keep React state alive
+    if (e) e.preventDefault(); 
+
     try {
       setIsSubmitting(true);
       if (!validate()) return;
-      // Simulate API call
-      await register(formData);
-      navigate("/dashboard");
+
+      // 2. Call the registration service
+      const result = await register(formData);
+      
+      /**
+       * 3. Targeted Navigation
+       * After registration, we should send them to the specific 
+       * organization layout path defined in your AppRouter.
+       */
+      if (result && (result.statusCode === 200 || result.statusCode === 201)) {
+        // This path matches your AppRouter's organization section
+        navigate("/organization/dashboard"); 
+      } else {
+        setErrors({ main: result?.message || "Registration failed. Please try again." });
+      }
+
     } catch (error) {
-      setErrors({ main: error });
+      // 4. Handle the ENOTFOUND/Connection error
+      setErrors({ main: "Database connection error. Please ensure your backend is running." });
+      console.error("Registration Error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-blue-50 flex items-center justify-center px-4 py-12">
       {/* Decorative blobs */}
