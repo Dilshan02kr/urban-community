@@ -96,6 +96,9 @@ const updateProfile = async (req, res, next) => {
     if (Object.prototype.hasOwnProperty.call(value, "phone")) {
       organization.phone = value.phone || "";
     }
+    if (Object.prototype.hasOwnProperty.call(value, "profileImage")) {
+      organization.profileImage = value.profileImage || "";
+    }
 
     await organization.save();
 

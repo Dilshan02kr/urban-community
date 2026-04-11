@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
       }
       return data;
     } catch (error) {
-      throw error.response.data.message || "Login failed. Please try again.";
+      throw error?.response?.data?.message || "Login failed. Please try again.";
     }
   };
 

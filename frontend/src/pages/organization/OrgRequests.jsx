@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { message } from "antd";
 import { organizationService } from "@/services/organization.service";
+import { Spinner } from "@/components/common/Spinner";
 
 const formatDate = (dateValue) => {
   if (!dateValue) return "Date not available";
@@ -66,8 +67,8 @@ export default function OrgRequests() {
 
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-6xl px-6 py-8">
-        <p className="text-sm font-medium text-slate-600">Loading requests...</p>
+      <div className="mx-auto max-w-4xl">
+        <Spinner label="Loading civilian profile" />
       </div>
     );
   }
