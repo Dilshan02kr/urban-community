@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui"; // Ensure this matches your UI component structure
-import { Lock, Mail, Recycle, User } from "lucide-react";
+import { Lock, Mail, Recycle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
@@ -47,111 +47,56 @@ export default function LoginPage() {
     }
   };
 
-  const styles = {
-    container: {
-      minHeight: "100vh",
-      background: "#e1e3eb",
-      display: "grid",
-      gridTemplateColumns: "1fr", // Mobile default
-      gridTemplateRows: "auto 1fr", // Mobile default
-      fontFamily: "'DM Sans', sans-serif",
-      position: "relative",
-      overflow: "hidden",
-    },
-    imageSide: {
-      background: "url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      display: "none", // Hidden on mobile
-      position: "relative",
-    },
-    imageOverlay: {
-      position: "absolute",
-      inset: 0,
-      background: "linear-gradient(to top, rgba(15,17,23,1) 0%, rgba(15,17,23,0.5) 50%, rgba(15,17,23,0.8) 100%)",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-end",
-      padding: "4rem",
-    },
-    formSide: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "2rem",
-      zIndex: 1,
-    },
-    card: {
-      width: "100%",
-      maxWidth: "420px",
-      background: "#1a1d27",
-      border: "1px solid rgba(255,255,255,0.09)",
-      borderRadius: "24px",
-      padding: "2.5rem",
-      position: "relative",
-    },
-    submitButton: {
-      marginTop: "1rem",
-      width: "100%",
-      padding: "14px",
-      background: isSubmitting ? "rgba(16,185,129,0.5)" : "#10b981",
-      color: "#fff",
-      border: "none",
-      borderRadius: "12px",
-      fontSize: "15px",
-      fontWeight: 600,
-      cursor: isSubmitting ? "not-allowed" : "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "10px",
-      transition: "all 0.15s",
-      fontFamily: "inherit",
-    }
-  };
-
   return (
-    <div style={styles.container} className="responsive-container">
+    <div className="grid min-h-screen grid-cols-1 bg-white font-['DM_Sans',sans-serif] lg:grid-cols-2">
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       
       {/* 🖼️ Image Side */}
-      <div style={styles.imageSide} className="responsive-image">
-        <div style={styles.imageOverlay}>
-          <div style={{ display: "flex", itemsCenter: "center", gap: "10px", color: "#10b981", marginBottom: "1rem"}}>
+      <div
+        className="relative hidden bg-cover bg-center lg:block"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070&auto=format&fit=crop')",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/55 via-emerald-800/35 to-white/30 p-16">
+          <div className="flex h-full flex-col justify-end">
+          <div className="mb-4 flex items-center gap-3 text-emerald-600">
             <Recycle size={32} strokeWidth={2.5}/>
-            <span style={{ fontSize: "28px", fontWeight: 700, color: "white"}}>Urban Community</span>
+            <span className="text-3xl font-extrabold tracking-tight text-white">Urban Community</span>
           </div>
-          <h2 style={{ fontSize: "40px", fontWeight: 700, color: "white", letterSpacing: "-1px", lineHeight: 1.1, margin: 0 }}>
+          <h2 className="m-0 text-5xl font-bold leading-tight tracking-tight text-white">
             Smart waste solutions<br/> for a cleaner city.
           </h2>
-          <p style={{ color: "#9ca3af", marginTop: "1rem", fontSize: "16px", maxWidth: "480px" }}>
+          <p className="mt-4 max-w-xl text-base leading-7 text-slate-100">
             Connect with local initiatives, report issues, and manage your sustainability footprint effortlessly.
           </p>
+          </div>
         </div>
       </div>
 
       {/* 📝 Form Side */}
-      <div style={styles.formSide}>
-        <div style={styles.card}>
-          <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-            <h1 style={{ fontSize: "28px", fontWeight: 700, color: "#f1f5f9", letterSpacing: "-1px", margin: 0 }}>
+      <div className="flex items-center justify-center px-6 py-10 sm:px-10 lg:px-16">
+        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-lg shadow-slate-200/40 sm:p-10">
+          <div className="mb-10 text-center">
+            <h1 className="m-0 text-3xl font-bold tracking-tight text-slate-900">
               Welcome back
             </h1>
-            <p style={{ fontSize: "15px", color: "#6b7280", marginTop: "8px" }}>
+            <p className="mt-2 text-sm text-slate-600">
               Log in to access your dashboard
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {errors.main && (
-              <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#f87171", padding: "12px", borderRadius: "10px", fontSize: "13px", textAlign: "center" }}>
+              <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-3 text-center text-sm font-medium text-rose-700">
                 {errors.main}
               </div>
             )}
 
             {/* Email Address */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label style={{ fontSize: "11px", fontWeight: 700, uppercase: "true", letterSpacing: "1px", color: "#6b7280" }}>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
                 Email Address
               </label>
               <Input
@@ -163,16 +108,17 @@ export default function LoginPage() {
                 icon={Mail}
                 onChange={handleChange("email")}
                 error={errors.email}
+                style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}
               />
             </div>
 
             {/* Password */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <label style={{ fontSize: "11px", fontWeight: 700, uppercase: "true", letterSpacing: "1px", color: "#6b7280" }}>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
                   Password
                 </label>
-                <a href="/forgot-password" style={{ fontSize: "12px", color: "#10b981", textDecoration: "none", fontWeight: 500 }}>
+                <a href="/forgot-password" className="text-xs font-semibold text-emerald-600 no-underline hover:text-emerald-700">
                   Forgot password?
                 </a >
               </div>
@@ -185,6 +131,7 @@ export default function LoginPage() {
                 required
                 onChange={handleChange("password")}
                 error={errors.password}
+                style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}
               />
             </div>
 
@@ -192,13 +139,11 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              style={styles.submitButton}
-              onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.background = "#059669"; }}
-              onMouseLeave={(e) => { if (!isSubmitting) e.currentTarget.style.background = "#10b981"; }}
+              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-emerald-200 transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-emerald-300"
             >
               {isSubmitting ? (
                 <>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: "spin 0.8s linear infinite" }}><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>
+                  <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>
                   Authenticating...
                 </>
               ) : (
@@ -208,28 +153,14 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <p style={{ textAlign: "center", fontSize: "14px", color: "#4b5563", marginTop: "2rem" }}>
+          <p className="mt-8 text-center text-sm text-slate-600">
             Don't have an account?{" "}
-            <a href="/register" style={{ color: "#10b981", fontWeight: 600, textDecoration: "none" }}>
+            <a href="/register" className="font-semibold text-emerald-600 no-underline hover:text-emerald-700">
               Create one now
             </a>
           </p>
         </div>
       </div>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        /* Media Query for responsiveness */
-        @media (min-width: 992px) {
-          .responsive-container {
-            grid-template-columns: 1fr 1fr !important;
-            grid-template-rows: 1fr !important;
-          }
-          .responsive-image {
-            display: flex !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
