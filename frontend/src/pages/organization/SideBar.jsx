@@ -2,6 +2,7 @@ import { ROUTES } from "@/constants/routes";
 import { Bell, Earth, LayoutDashboard, List, Mail, Recycle, User } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export default function SideBar() {
   const navigate = useNavigate();
