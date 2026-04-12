@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui"; // Ensure this matches your UI component structure
 import { Lock, Mail, Recycle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
+import { ROUTES } from "@/constants/routes";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -161,9 +162,13 @@ export default function LoginPage() {
           {/* Footer */}
           <p className="mt-8 text-center text-sm text-slate-600">
             Don't have an account?{" "}
-            <a href="/register" className="font-semibold text-emerald-600 no-underline hover:text-emerald-700">
+            <Link
+              to={ROUTES.HOME}
+              state={{ openRegister: true }}
+              className="font-semibold text-emerald-600 no-underline hover:text-emerald-700"
+            >
               Create one now
-            </a>
+            </Link>
           </p>
         </div>
       </div>
