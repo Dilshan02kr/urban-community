@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { getSessionValue } from "@/utils/session";
+import { API_BASE_URL } from "@/services/axiosInstance";
 
 // Components
 import EventCard from "../../components/EventCard"; 
@@ -27,7 +28,7 @@ export default function OrganizationEvents() {
   const fetchMyEvents = async () => {
     try {
       const token = getAuthToken();
-      const response = await axios.get("http://localhost:3000/api/events/my-events", {
+      const response = await axios.get(`${API_BASE_URL}/api/events/my-events`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents(response.data.data || []);
@@ -65,7 +66,7 @@ export default function OrganizationEvents() {
     e.preventDefault();
     try {
       const token = getAuthToken();
-      await axios.post("http://localhost:3000/api/events", formData, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${API_BASE_URL}/api/events`, formData, { headers: { Authorization: `Bearer ${token}` } });
       alert("Event registered successfully!");
       setFormData({ title: "", description: "", date: "", location: "", organization: "" });
       setView("overview");
@@ -77,7 +78,7 @@ export default function OrganizationEvents() {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
       const token = getAuthToken();
-      await axios.delete(`http://localhost:3000/api/events/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${API_BASE_URL}/api/events/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchMyEvents();
     } catch (err) { alert("Unauthorized deletion."); }
   };
@@ -97,7 +98,7 @@ export default function OrganizationEvents() {
     e.preventDefault();
     try {
       const token = getAuthToken();
-      await axios.put(`http://localhost:3000/api/events/${editingEvent._id}`, editForm, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(`${API_BASE_URL}/api/events/${editingEvent._id}`, editForm, { headers: { Authorization: `Bearer ${token}` } });
       setEditingEvent(null);
       fetchMyEvents();
     } catch (err) { alert("Update failed."); }

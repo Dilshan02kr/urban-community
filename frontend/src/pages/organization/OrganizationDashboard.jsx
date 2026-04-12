@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "@/services/axiosInstance";
 
 // Derive status from date since your schema has no status field
 const getStatus = (dateStr) =>
@@ -65,7 +66,7 @@ export default function OrganizationDashboard() {
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken");
 
-    fetch("http://localhost:3000/api/events/my-events", {
+    fetch(`${API_BASE_URL}/api/events/my-events`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
