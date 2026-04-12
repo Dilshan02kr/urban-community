@@ -1,4 +1,4 @@
-import { Earth, LayoutDashboard, List, User } from "lucide-react";
+import { Earth, LayoutDashboard, List, Recycle, User } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export default function SideBar() {
       icon: <List size={20} /> 
     },
     { 
-      label: "Explore Community", 
+      label: "Explore Events", 
       path: "/organization/explore", // This now matches the AppRouter exactly
       icon: <Earth size={20} /> 
     },
@@ -33,10 +33,8 @@ export default function SideBar() {
     <div className="flex min-h-screen bg-slate-950 text-white font-sans">
       <aside className="w-64 border-r border-white/10 bg-slate-900/50 backdrop-blur-xl p-6 hidden md:block">
         <div className="mb-10 flex items-center gap-3 group cursor-pointer" onClick={() => navigate("/")}>
-          <div className="bg-emerald-500 p-2 rounded-lg text-slate-950 font-bold shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
-            UC
-          </div>
-          <span className="text-xl font-bold tracking-tight">Org Panel</span>
+           <Recycle size={32} strokeWidth={2.5}/>
+          <span className="text-xl font-bold tracking-tight">Urban</span>
         </div>
 
         <nav className="space-y-2">

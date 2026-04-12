@@ -2,6 +2,7 @@ import { Spinner } from "@/components/common/Spinner";
 import { Input } from "@/components/ui";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useOrganization } from "@/contexts/OrganizationProvider";
+import UseOneImgUpload from "@/hooks/UseOneImgUpload";
 import { message, Modal } from "antd";
 import { Building2, CircleCheck, Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -11,6 +12,7 @@ const buildFormFromOrg = (data = {}) => ({
   email: data.email || "",
   phone: data.phone || "",
   address: data.address || "",
+  profileImage: data.profileImage || "",
   description: data.description || "",
 });
 
@@ -20,6 +22,7 @@ export default function OrgProfile() {
   const [form, setForm] = useState(buildFormFromOrg());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState(null);
   const { confirm } = Modal;
 
@@ -74,6 +77,7 @@ export default function OrgProfile() {
       name: form.name.trim(),
       phone: form.phone.trim(),
       address: form.address.trim(),
+      profileImage: form.profileImage.trim(),
       description: form.description.trim(),
     };
 
@@ -87,6 +91,24 @@ export default function OrgProfile() {
       setError(saveError);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const onUploadProfileImage = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const imageUrl = await UseOneImgUpload({ file });
+      onFieldChange("profileImage", imageUrl);
+      message.success("Image uploaded. Save changes to update your profile.");
+    } catch (uploadError) {
+      console.error("Failed to upload organization image:", uploadError);
+      message.error(uploadError?.message || "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
+      event.target.value = "";
     }
   };
 
@@ -151,6 +173,36 @@ export default function OrgProfile() {
         className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 shadow-lg shadow-slate-200/40"
       >
         <div className="border-b border-slate-200/80 px-6 py-6 sm:px-8">
+          <div className="mb-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Profile Image
+            </p>
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
+              {form.profileImage ? (
+                <img
+                  src={form.profileImage}
+                  alt="Organization profile"
+                  className="h-24 w-24 rounded-xl border border-slate-200 object-cover"
+                />
+              ) : (
+                <div className="inline-flex h-24 w-24 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-xs font-medium text-slate-500">
+                  No image
+                </div>
+              )}
+
+              <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100">
+                <span>{uploadingImage ? "Uploading image..." : "Upload image"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onUploadProfileImage}
+                  disabled={uploadingImage}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          </div>
+
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             Basic Details
           </p>
@@ -219,14 +271,14 @@ export default function OrgProfile() {
           <button
             type="button"
             onClick={onReset}
-            disabled={saving || !hasChanges}
+            disabled={saving || uploadingImage || !hasChanges}
             className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Reset
           </button>
           <button
             type="submit"
-            disabled={saving || !hasChanges}
+            disabled={saving || uploadingImage || !hasChanges}
             className="rounded-xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-200 transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-emerald-300"
           >
             {saving ? "Saving..." : "Save Changes"}

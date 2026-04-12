@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   Navigate,
+  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { MarketingLayout } from "@/layouts/MarketingLayout";
@@ -16,12 +17,17 @@ import CivilianDashboardHomePage from "@/pages/civilian/CivilianDashboardHomePag
 import CivilianDashboardSubPage from "@/pages/civilian/CivilianEvents";
 import CivilianProfile from "@/pages/civilian/CivilianProfile";
 import GarbagePickupRequestPage from "@/pages/civilian/GarbagePickupRequestPage";
+import IssueReportingPage from "@/pages/civilian/IssueReportingPage";
+import CivilianIssueDetailPage from "@/pages/civilian/CivilianIssueDetailPage";
 import RecyclingCentersPage from "@/pages/civilian/RecyclingCentersPage";
 import AdminDashboardLayout from "@/layouts/AdminDashboardLayout";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
 import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
 import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
+import AdminSectionPlaceholderPage from "@/pages/admin/AdminSectionPlaceholderPage";
+import AdminIssueManagementPage from "@/pages/admin/AdminIssueManagementPage";
+import AdminIssueDetailPage from "@/pages/admin/AdminIssueDetailPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
@@ -111,13 +117,12 @@ const router = createBrowserRouter([
             element: <CivilianEvents />,
           },
           {
+            path: "issue-reporting/:issueId",
+            element: <CivilianIssueDetailPage />,
+          },
+          {
             path: "issue-reporting",
-            element: (
-              <CivilianDashboardSubPage
-                title="Issue Reporting"
-                description="Report civic issues and track responses from your area."
-              />
-            ),
+            element: <IssueReportingPage />,
           },
           {
             path: "garbage-collectors",
@@ -159,12 +164,44 @@ const router = createBrowserRouter([
         element: <AdminDashboardHomePage />,
       },
       {
+        path: "users",
+        element: (
+          <AdminSectionPlaceholderPage
+            title="User Management"
+            description="Manage civilian and organization accounts. This module will be connected to the backend when user administration APIs are available."
+          />
+        ),
+      },
+      {
+        path: "events",
+        element: (
+          <AdminSectionPlaceholderPage
+            title="Event Management"
+            description="Create and oversee community events from one place. Implementation is planned for a future sprint."
+          />
+        ),
+      },
+      {
         path: "recycling-centers",
         element: <AdminRecyclingCentersPage />,
       },
       {
         path: "pickup-requests",
         element: <AdminPickupRequestsPage />,
+      },
+      {
+        path: "issues",
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <AdminIssueManagementPage />,
+          },
+          {
+            path: ":issueId",
+            element: <AdminIssueDetailPage />,
+          },
+        ],
       },
     ],
   },

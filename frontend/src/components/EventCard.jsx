@@ -1,13 +1,39 @@
-export default function EventCard({ event }) {
+import React from "react";
+
+// Inline icons to keep the file self-contained
+const EditIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+);
+const TrashIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6M14 11v6" /></svg>
+);
+
+export default function EventCard({ event, onEdit, onDelete }) {
   return (
-    <div className="relative rounded-2xl p-5 border border-slate-200 bg-white transition-all hover:border-emerald-500/40 overflow-hidden">
+    <div className="relative rounded-2xl p-5 border border-slate-200 bg-white transition-all hover:border-emerald-500/40 overflow-hidden group">
       {/* Top accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-emerald-500 rounded-t-2xl" />
 
-      <div className="mt-1 mb-4">
-        <span className="text-xs font-bold uppercase px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 inline-block max-w-full truncate">
+      <div className="mt-1 mb-4 flex justify-between items-start">
+        <span className="text-xs font-bold uppercase px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 inline-block max-w-[70%] truncate">
           {event.organization}
         </span>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <button 
+            onClick={() => onEdit(event)}
+            className="p-1.5 rounded-md text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+          >
+            <EditIcon />
+          </button>
+          <button 
+            onClick={() => onDelete(event._id)}
+            className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+          >
+            <TrashIcon />
+          </button>
+        </div>
       </div>
 
       <h3 className="text-base font-semibold mb-2 text-slate-900 leading-snug">
