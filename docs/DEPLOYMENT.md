@@ -11,7 +11,7 @@ This document describes how the **Urban Community** project is deployed to produ
 | Service | Placeholder (replace with your live URL) |
 |---------|--------------------------------------------|
 | **Deployed backend API** | `https://YOUR-BACKEND.railway.app` |
-| **Deployed frontend application** | `[https://YOUR-APP.vercel.app](https://urban-community.vercel.app/)` |
+| **Deployed frontend application** | `(https://urban-community.vercel.app/)` |
 
 **Your live links (edit this table):**
 
