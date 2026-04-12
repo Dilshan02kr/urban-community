@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const preset_key = process.env.PRESET_KEY;
-const cloud_name = process.env.CLOUD_NAME;
+const preset_key = process.env.REACT_APP_PRESET_KEY;
+const cloud_name = process.env.REACT_APP_CLOUD_NAME;
 
 const UseOneImgUpload = async ({ file }) => {
   if (!file) {
