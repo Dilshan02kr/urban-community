@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { issueService } from "@/services/issue.service";
@@ -408,7 +408,7 @@ export default function IssueReportingPage() {
       </div>
 
       {activeTab === "report" && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-label="Report civic issue">
           <div
             style={{
               borderRadius: 20,
@@ -421,6 +421,7 @@ export default function IssueReportingPage() {
           >
             <div style={{ padding: "28px 28px 0" }}>
               <label
+                htmlFor="issue-title"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -472,6 +473,7 @@ export default function IssueReportingPage() {
 
             <div style={{ padding: "24px 28px 0" }}>
               <label
+                htmlFor="issue-description"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -525,6 +527,7 @@ export default function IssueReportingPage() {
 
             <div style={{ padding: "24px 28px 0" }}>
               <label
+                htmlFor="issue-category"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -572,6 +575,7 @@ export default function IssueReportingPage() {
 
             <div style={{ padding: "24px 28px 0" }}>
               <label
+                htmlFor="issue-location"
                 style={{
                   display: "flex",
                   alignItems: "center",
