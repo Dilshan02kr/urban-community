@@ -1,11 +1,17 @@
 import axios from "axios";
 
-const preset_key = process.env.PRESET_KEY;
-const cloud_name = process.env.CLOUD_NAME;
+const preset_key = import.meta.env.VITE_PRESET_KEY;
+const cloud_name = import.meta.env.VITE_CLOUD_NAME;
 
 const UseOneImgUpload = async ({ file }) => {
   if (!file) {
     throw new Error("Please select an image file to upload.");
+  }
+
+  if (!preset_key || !cloud_name) {
+    throw new Error(
+      "Missing Cloudinary config. Set VITE_PRESET_KEY and VITE_CLOUD_NAME in frontend/.env",
+    );
   }
 
   const formData = new FormData();

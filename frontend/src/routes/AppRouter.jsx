@@ -57,17 +57,18 @@ const router = createBrowserRouter([
         path: ROUTES.REGISTER_ORGANIZATION,
         element: <RegisterOrganization />,
       },
-    ],
-  },
-  {
-    element: <MarketingLayout />,
-    children: [
       {
-        path: ROUTES.HOME,
-        element: <HomePage />,
+        element: <MarketingLayout />,
+        children: [
+          {
+            path: ROUTES.HOME,
+            element: <HomePage />,
+          },
+        ],
       },
     ],
   },
+
   // Organization dashboard
   {
     element: <ProtectedRoute role="organization" />,
