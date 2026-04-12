@@ -128,9 +128,9 @@ The paths below are relative to **`docs/DEPLOYMENT.md`**. After you drop in the 
 ![Railway project](deployment-screenshots/railway-project.png)  
 ![Railway environment variables (names only)](deployment-screenshots/railway-variables.png)  
 ![Railway deploy success](deployment-screenshots/railway-deploy-logs.png)  
-![Vercel project](deployment-screenshots/vercel-project.png)  
-![Vercel environment variables (names only)](deployment-screenshots/vercel-env.png)  
-![Vercel deployment success](deployment-screenshots/vercel-deployment-success.png)  
+![Vercel project](deployment-screenshots/vercel-project.jpeg)  
+![Vercel environment variables (names only)](deployment-screenshots/vercel-env.jpeg)  
+![Vercel deployment success](deployment-screenshots/vercel-deployment-success.jpeg)  
 ![Live frontend](deployment-screenshots/frontend-live.png)  
 ![Live backend / API check](deployment-screenshots/backend-health-or-api.png)
 
