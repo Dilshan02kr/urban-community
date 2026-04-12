@@ -1,5 +1,5 @@
 import { ROUTES } from "@/constants/routes";
-import { Earth, LayoutDashboard, List, Mail, Recycle, User } from "lucide-react";
+import { Bell, Earth, LayoutDashboard, List, Mail, Recycle, User } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -24,6 +24,11 @@ export default function SideBar() {
       icon: <Earth size={20} />,
     },
     { label: "Requests", path: ROUTES.ORGANIZATION_REQUESTS, icon: <Mail /> },
+    {
+      label: "Notifications",
+      path: ROUTES.ORGANIZATION_NOTIFICATIONS,
+      icon: <Bell size={20} />,
+    },
     {
       label: "Profile",
       path: "/organization/profile",
