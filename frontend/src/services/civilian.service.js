@@ -17,7 +17,7 @@ export const civilianService = {
     return await axiosInstance.put(`${API_BASE_URL}/me`, formData);
   },
   getEvents: async () => {
-    return await axiosInstance.get(`api/events`);
+    return await axiosInstance.get("/api/events");
   },
   sendEventRequest: async (eventId) => {
     return await axiosInstance.post(`/api/member/send-request`, { eventId });

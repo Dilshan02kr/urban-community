@@ -96,7 +96,10 @@ export default function LoginPage() {
 
             {/* Email Address */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+              <label
+                htmlFor="email"
+                className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500"
+              >
                 Email Address
               </label>
               <Input
@@ -115,7 +118,10 @@ export default function LoginPage() {
             {/* Password */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                <label
+                  htmlFor="password"
+                  className="text-xs font-bold uppercase tracking-[0.12em] text-slate-500"
+                >
                   Password
                 </label>
                 <a href="/forgot-password" className="text-xs font-semibold text-emerald-600 no-underline hover:text-emerald-700">
