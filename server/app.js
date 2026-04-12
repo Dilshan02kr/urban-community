@@ -8,7 +8,7 @@ const organizationRoute = require("./modules/organization/organization.route");
 const errorHandler = require("./middlewares/errorHandler");
 const userRoute = require("./modules/user/user.route");
 const memberRoute = require("./modules/member/member.route");
-const adminRoute = require("./modules/admin/admin.route");
+const adminRoute = require("./modules/Admin/admin.route");
 
 const app = express();
 
