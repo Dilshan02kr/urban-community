@@ -8,7 +8,27 @@ const TrashIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6M14 11v6" /></svg>
 );
 
-export default function EventCard({ event, onEdit, onDelete }) {
+export default function EventCard({
+  event,
+  onEdit,
+  onDelete,
+  membershipStatus,
+  isRequesting = false,
+  onSendRequest,
+}) {
+  const canManageEvent = typeof onEdit === "function" || typeof onDelete === "function";
+  const canSendRequest = typeof onSendRequest === "function";
+  const normalizedStatus = membershipStatus?.toLowerCase?.();
+  const requestDisabled = isRequesting || normalizedStatus === "pending" || normalizedStatus === "accepted";
+
+  const requestLabel = isRequesting
+    ? "Sending..."
+    : normalizedStatus === "accepted"
+      ? "Joined"
+      : normalizedStatus === "pending"
+        ? "Request Pending"
+        : "Send Request";
+
   return (
     <div className="relative rounded-2xl p-5 border border-slate-200 bg-white transition-all hover:border-emerald-500/40 overflow-hidden group">
       {/* Top accent bar */}
@@ -18,22 +38,35 @@ export default function EventCard({ event, onEdit, onDelete }) {
         <span className="text-xs font-bold uppercase px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 inline-block max-w-[70%] truncate">
           {event.organization}
         </span>
-        
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <button 
-            onClick={() => onEdit(event)}
-            className="p-1.5 rounded-md text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-          >
-            <EditIcon />
-          </button>
-          <button 
-            onClick={() => onDelete(event._id)}
-            className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-          >
-            <TrashIcon />
-          </button>
-        </div>
+
+        {membershipStatus && (
+          <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+            {membershipStatus}
+          </span>
+        )}
+
+        {canManageEvent && (
+          <div className="flex gap-2">
+            {typeof onEdit === "function" && (
+              <button
+                onClick={() => onEdit(event)}
+                className="p-1.5 rounded-md text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                aria-label="Edit event"
+              >
+                <EditIcon />
+              </button>
+            )}
+            {typeof onDelete === "function" && (
+              <button
+                onClick={() => onDelete(event._id)}
+                className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                aria-label="Delete event"
+              >
+                <TrashIcon />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <h3 className="text-base font-semibold mb-2 text-slate-900 leading-snug">
@@ -52,6 +85,17 @@ export default function EventCard({ event, onEdit, onDelete }) {
           <span>📅</span> {new Date(event.date).toLocaleDateString(undefined, { dateStyle: "long" })}
         </div>
       </div>
+
+      {canSendRequest && (
+        <button
+          type="button"
+          onClick={() => onSendRequest(event._id)}
+          disabled={requestDisabled}
+          className="mt-4 w-full rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          {requestLabel}
+        </button>
+      )}
     </div>
   );
 }

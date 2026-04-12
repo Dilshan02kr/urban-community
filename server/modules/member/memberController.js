@@ -9,6 +9,8 @@ const sendRequest = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const eventId = req.body.eventId;
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const eventObjectId = new mongoose.Types.ObjectId(eventId);
 
     if (!eventId || !mongoose.isValidObjectId(eventId)) {
       return res.status(400).json({
@@ -39,8 +41,8 @@ const sendRequest = async (req, res, next) => {
     const member = await Member.aggregate([
       {
         $match: {
-          userId: userId,
-          eventId: eventId,
+          userId: userObjectId,
+          eventId: eventObjectId,
           status: MEMBER_STATUS.ACCEPTED,
         },
       },
@@ -57,8 +59,8 @@ const sendRequest = async (req, res, next) => {
     const pendingRequest = await Member.aggregate([
       {
         $match: {
-          userId: userId,
-          eventId: eventId,
+          userId: userObjectId,
+          eventId: eventObjectId,
           status: MEMBER_STATUS.PENDING,
         },
       },

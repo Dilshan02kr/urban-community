@@ -25,9 +25,11 @@ import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import AdminDashboardHomePage from "@/pages/admin/AdminDashboardHomePage";
 import AdminRecyclingCentersPage from "@/pages/admin/AdminRecyclingCentersPage";
 import AdminPickupRequestsPage from "@/pages/admin/AdminPickupRequestsPage";
-import AdminSectionPlaceholderPage from "@/pages/admin/AdminSectionPlaceholderPage";
 import AdminIssueManagementPage from "@/pages/admin/AdminIssueManagementPage";
 import AdminIssueDetailPage from "@/pages/admin/AdminIssueDetailPage";
+import AdminUserManagementPage from "@/pages/admin/AdminUserManagementPage";
+import AdminEventManagementPage from "@/pages/admin/AdminEventManagementPage";
+import AdminEventDetailPage from "@/pages/admin/AdminEventDetailPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import OrganizationLayout from "@/layouts/OrganizationLayout";
 import OrganizationEvents from "@/pages/organization/OrganizationEvents";
@@ -165,21 +167,21 @@ const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: (
-          <AdminSectionPlaceholderPage
-            title="User Management"
-            description="Manage civilian and organization accounts. This module will be connected to the backend when user administration APIs are available."
-          />
-        ),
+        element: <AdminUserManagementPage />,
       },
       {
         path: "events",
-        element: (
-          <AdminSectionPlaceholderPage
-            title="Event Management"
-            description="Create and oversee community events from one place. Implementation is planned for a future sprint."
-          />
-        ),
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <AdminEventManagementPage />,
+          },
+          {
+            path: ":eventId",
+            element: <AdminEventDetailPage />,
+          },
+        ],
       },
       {
         path: "recycling-centers",

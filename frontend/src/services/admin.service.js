@@ -104,4 +104,59 @@ export const adminService = {
       { headers: getAdminHeaders() },
     );
   },
+
+  /**
+   * User management — GET /api/admin/users/civilians
+   * @param {{ page?: number, limit?: number, search?: string }} params
+   */
+  getCivilians: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== null && v !== "",
+      ),
+    );
+    return await axiosInstance.get(`${ADMIN_URL}/users/civilians`, {
+      headers: getAdminHeaders(),
+      params: clean,
+    });
+  },
+
+  /**
+   * User management — GET /api/admin/users/organizations
+   * @param {{ page?: number, limit?: number, search?: string }} params
+   */
+  getOrganizations: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== null && v !== "",
+      ),
+    );
+    return await axiosInstance.get(`${ADMIN_URL}/users/organizations`, {
+      headers: getAdminHeaders(),
+      params: clean,
+    });
+  },
+
+  /**
+   * Events (admin) — GET /api/admin/events
+   * @param {{ page?: number, limit?: number, search?: string }} params
+   */
+  getEvents: async (params = {}) => {
+    const clean = Object.fromEntries(
+      Object.entries(params).filter(
+        ([, v]) => v !== undefined && v !== null && v !== "",
+      ),
+    );
+    return await axiosInstance.get(`${ADMIN_URL}/events`, {
+      headers: getAdminHeaders(),
+      params: clean,
+    });
+  },
+
+  /** GET /api/admin/events/:id — populated organization */
+  getEventByIdAdmin: async (eventId) => {
+    return await axiosInstance.get(`${ADMIN_URL}/events/${eventId}`, {
+      headers: getAdminHeaders(),
+    });
+  },
 };
