@@ -2,7 +2,7 @@
 
 **Classification:** Public-SLIIT  
 
-This document describes how the **Urban Community** project is deployed to production-like environments: the **backend** on **Railway** and the **frontend** on **Vercel**. Replace all **placeholder URLs** with your team’s live links when you submit.
+This document describes how the **Urban Community** project is deployed to production-like environments: the **backend** on **Railway** and the **frontend** on **Vercel**. 
 
 ---
 
@@ -22,9 +22,8 @@ This document describes how the **Urban Community** project is deployed to produ
 
 ---
 
-## Environment variables (names only — do not commit secrets)
+## Environment variables 
 
-Configure these in **Railway** (backend service) and **Vercel** (frontend project). Use strong random values for secrets; never paste real secrets into this README or into public screenshots.
 
 ### Backend (Railway) — `server/`
 
@@ -38,7 +37,6 @@ Configure these in **Railway** (backend service) and **Vercel** (frontend projec
 | `CLOUDINARY_API_KEY` | Yes (if uploads used) | Cloudinary API key. |
 | `CLOUDINARY_API_SECRET` | Yes (if uploads used) | Cloudinary API secret. |
 
-Optional (only if your branch uses them): CORS-related vars, email keys, etc.—mirror whatever exists in **`server/.env`** locally.
 
 ### Frontend (Vercel) — `frontend/`
 
@@ -134,16 +132,5 @@ The paths below are relative to **`docs/DEPLOYMENT.md`**. After you drop in the 
 ![Live frontend](deployment-screenshots/frontend-live.png)  
 ![Live backend / API check](deployment-screenshots/backend-health-or-api.png)
 
----
-
-## Checklist before submission
-
-- [ ] Railway backend URL updated in this doc and working over **HTTPS**.
-- [ ] Vercel frontend URL updated and loads without console errors.
-- [ ] All required env vars set on Railway and Vercel (no secrets in git).
-- [ ] CORS / API base URL verified from the **deployed** frontend to the **deployed** backend.
-- [ ] Screenshots added under **`docs/deployment-screenshots/`** and linked above.
-
----
 
 *For local setup and API details, see `docs/PROJECT_README.md`. Classification: **Public-SLIIT**.*
